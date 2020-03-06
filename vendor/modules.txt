@@ -1,0 +1,28 @@
+# github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
+github.com/cpuguy83/go-md2man/v2/md2man
+# github.com/emersion/go-vcard v0.0.0-20191221110513-5f81fa0d3cc7
+github.com/emersion/go-vcard
+# github.com/gorilla/websocket v1.4.1
+github.com/gorilla/websocket
+# github.com/hsanjuan/go-ndef v0.0.0-20181124005326-4235d2635a81
+github.com/hsanjuan/go-ndef
+github.com/hsanjuan/go-ndef/types/absoluteuri
+github.com/hsanjuan/go-ndef/types/ext
+github.com/hsanjuan/go-ndef/types/generic
+github.com/hsanjuan/go-ndef/types/media
+github.com/hsanjuan/go-ndef/types/wkt/text
+github.com/hsanjuan/go-ndef/types/wkt/uri
+# github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
+github.com/nu7hatch/gouuid
+# github.com/pkg/errors v0.9.1
+github.com/pkg/errors
+# github.com/russross/blackfriday/v2 v2.0.1
+github.com/russross/blackfriday/v2
+# github.com/shurcooL/sanitized_anchor_name v1.0.0
+github.com/shurcooL/sanitized_anchor_name
+# github.com/taglme/nfc-client v0.0.0-20200304204613-7ee430a18256
+github.com/taglme/nfc-client/pkg/client
+github.com/taglme/nfc-client/pkg/models
+github.com/taglme/nfc-client/pkg/ndefconv
+# github.com/urfave/cli/v2 v2.1.1
+github.com/urfave/cli/v2
