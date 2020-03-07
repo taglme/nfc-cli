@@ -5,11 +5,10 @@ import (
 )
 
 type PrinterService interface {
-
 }
 
 type printerService struct {
-	writer    table.Writer
+	writer table.Writer
 }
 
 func New(writer table.Writer) PrinterService {

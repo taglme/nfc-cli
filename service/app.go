@@ -19,10 +19,20 @@ type AppService interface {
 type appService struct {
 	actions   actions.ActionService
 	nfcClient *client.Client
-	writer    table.Writer
-	host      string
-	adapter   int
-	cliApp    cli.App
+
+	writer table.Writer
+	cliApp cli.App
+
+	flagsMap map[string]cli.Flag
+	//  below is arguments controlled by ./flags.go
+	host    string
+	adapter int
+	repeat  int
+	output  string
+	append  bool
+	timeout int
+	input   string
+	auth    string
 }
 
 func New(writer table.Writer) AppService {
@@ -37,6 +47,7 @@ func New(writer table.Writer) AppService {
 }
 
 func (s *appService) Start() error {
+	s.flagsMap = s.getFlagsMap()
 	s.cliApp.Commands = s.getCommands()
 
 	sort.Sort(cli.FlagsByName(s.cliApp.Flags))
@@ -58,37 +69,29 @@ func (s *appService) SetActionService(a actions.ActionService) {
 	s.actions = a
 }
 
-func (s *appService) getFlags() []cli.Flag {
-	return []cli.Flag{
-		&cli.StringFlag{
-			Name:        "host",
-			Value:       "127.0.0.1:3011",
-			Usage:       "Target host and port",
-			Destination: &s.host,
-		},
-		&cli.IntFlag{
-			Name:        "adapter",
-			Value:       1,
-			Usage:       "Adapter",
-			Aliases:     []string{"a"},
-			Destination: &s.adapter,
-		},
-	}
-}
-
 func (s *appService) getCommands() []*cli.Command {
 	return []*cli.Command{
 		{
-			Name:   "version",
-			Usage:  "Application version",
-			Flags:  s.getFlags(),
+			Name:  "version",
+			Usage: "Application version",
+			Flags: []cli.Flag{
+				s.flagsMap[FlagHost],
+			},
 			Action: s.cmdVersion,
 		},
 		{
-			Name:   "adapters",
-			Usage:  "Get adapters list",
-			Flags:  s.getFlags(),
+			Name:  "adapters",
+			Usage: "Get adapters list",
+			Flags: []cli.Flag{
+				s.flagsMap[FlagHost],
+			},
 			Action: s.cmdAdapters,
 		},
+		//{
+		//	Name:   "read",
+		//	Usage:  "Read tag data with NDEF message",
+		//	Flags:  s.getFlags(),
+		//	Action: s.cmdAdapters,
+		//},
 	}
 }
