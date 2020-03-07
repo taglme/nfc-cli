@@ -1,139 +1,74 @@
 package service
 
 import (
+	"context"
 	"fmt"
-	"github.com/jedib0t/go-pretty/table"
 	"github.com/pkg/errors"
-	"github.com/taglme/nfc-cli/actions"
 	"github.com/taglme/nfc-cli/models"
-	"github.com/taglme/nfc-client/pkg/client"
 	"github.com/urfave/cli/v2"
 	"os"
+	"os/signal"
+	"time"
 )
 
 func (s *appService) cmdVersion(*cli.Context) error {
-	s.nfcClient = client.New(s.host, "en")
-	s.actions = actions.New(s.nfcClient)
+	s.cliStartedCb(s.host)
+	_, err := s.repository.GetVersion()
 
-	info, err := s.actions.GetVersion()
-	if err != nil {
-		return errors.Wrap(err, "Can't get application info")
-	}
-
-	s.writer.AppendHeader(table.Row{
-		"Name",
-		"Version",
-		"Commit",
-		"SDK Info",
-		"Platform",
-		"Build time",
-		"CheckSuccess",
-		"Supported",
-		"Have update",
-		"Update version",
-		"Update download",
-		"Started at",
-	})
-	s.writer.AppendRow(table.Row{
-		info.Name,
-		info.Version,
-		info.Commit,
-		info.SDKInfo,
-		info.Platform,
-		info.BuildTime,
-		info.CheckSuccess,
-		info.Supported,
-		info.HaveUpdate,
-		info.UpdateVersion,
-		info.UpdateDownload,
-		info.StartedAt,
-	})
-	s.writer.Render()
-
-	return nil
+	return err
 }
 
 func (s *appService) cmdAdapters(*cli.Context) error {
-	s.nfcClient = client.New(s.host, "en")
-	s.actions = actions.New(s.nfcClient)
+	s.cliStartedCb(s.host)
+	_, err := s.repository.GetAdapters()
 
-	adapters, err := s.actions.GetAdapters()
-	if err != nil {
-		return errors.Wrap(err, "Can't get adapters list")
-	}
-
-	s.writer.AppendHeader(table.Row{"Adapter ID", "Name", "Type", "Driver"})
-
-	for _, a := range adapters {
-		s.writer.AppendRow(table.Row{a.AdapterID, a.Name, a.Type.String(), a.Driver})
-	}
-	s.writer.SetStyle(table.StyleLight)
-	s.writer.Render()
-
-	return nil
+	return err
 }
 
-func (s *appService) cmdRead(ctx *cli.Context) error {
-	s.nfcClient = client.New(s.host, "en")
-	s.actions = actions.New(s.nfcClient)
+func (s *appService) eventHandler(e models.Event) {
+	s.cliStartedCb(s.host)
+	if e == models.EventJobFinished || e == models.EventJobDeleted {
+		s.exitCh <- struct{}{}
+	}
+}
+
+func (s *appService) cmdRead(*cli.Context) error {
+	s.cliStartedCb(s.host)
+	c1, cancel := context.WithCancel(context.Background())
+	s.exitCh = make(chan struct{})
+	err := s.repository.RunWsConnection(s.eventHandler)
+	if err != nil {
+		return errors.Wrap(err, "Can't establish the WS connection")
+	}
+	defer s.repository.StopWsConnection()
 
 	// TODO: might be adapterId
-	nJ, err := s.actions.AddJob(models.CommandRead, "7f1d71b6-875a-463e-a835-707cebe1bc8c", s.timeout, s.repeat)
-	if err != nil {
-		return errors.Wrap(err, "Can't add read job")
-	}
+	_, err = s.repository.AddJob(models.CommandRead, "7f1d71b6-875a-463e-a835-707cebe1bc8c", s.repeat, s.timeout)
 
-	fmt.Println("New job has been submitted:")
+	go func(ctx context.Context) {
+		fmt.Println("Waiting for Job deleted event. Press ^C to stop.")
+		for {
+			select {
+			case <-ctx.Done():
+				fmt.Println("\nReceived done, exiting...")
+				time.Sleep(50 * time.Millisecond)
+				s.exitCh <- struct{}{}
+				return
+			default:
+			}
+		}
+	}(c1)
 
-	s.writer.AppendHeader(table.Row{
-		"Job ID",
-		"Job name",
-		"Status",
-		"Adapter id",
-		"Adapter name",
-		"Repeat",
-		"Total runs",
-		"Success runs",
-		"Error runs",
-		"Expire after",
-		"Created at",
-	})
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, os.Interrupt)
+	go func() {
+		select {
+		case <-signalCh:
+			cancel()
+			return
+		}
+	}()
+	<-s.exitCh
 
-	s.writer.AppendRow(table.Row{
-		nJ.JobID,
-		nJ.JobName,
-		nJ.Status.String(),
-		nJ.AdapterID,
-		nJ.AdapterName,
-		nJ.Repeat,
-		nJ.TotalRuns,
-		nJ.SuccessRuns,
-		nJ.ErrorRuns,
-		nJ.ExpireAfter,
-		nJ.CreatedAt.String(),
-	})
-
-	s.writer.Render()
-
-	// might be moved to some Printer serviice
-	fmt.Println("\nJob steps:")
-	s.writer = table.NewWriter()
-	s.writer.SetOutputMirror(os.Stdout)
-	s.writer.SetStyle(table.StyleRounded)
-
-	s.writer.AppendHeader(table.Row{
-		"Command",
-		"Command params",
-	})
-
-	for _, step := range nJ.Steps {
-		s.writer.AppendRow(table.Row{
-			step.Command,
-			step.Params,
-		})
-	}
-
-	s.writer.Render()
-
-	return nil
+	return err
 }

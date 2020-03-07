@@ -1,11 +1,8 @@
 package service
 
 import (
-	"github.com/jedib0t/go-pretty/table"
-	"github.com/pkg/errors"
-	"github.com/taglme/nfc-cli/actions"
 	"github.com/taglme/nfc-cli/models"
-	"github.com/taglme/nfc-client/pkg/client"
+	"github.com/taglme/nfc-cli/repository"
 	"github.com/urfave/cli/v2"
 	"os"
 	"sort"
@@ -13,16 +10,14 @@ import (
 
 type AppService interface {
 	Start() error
-	GetHost() string
-	SetActionService(actions.ActionService)
+	SetRepository(*repository.ApiService)
 }
 
 type appService struct {
-	actions   actions.ActionService
-	nfcClient *client.Client
-
-	writer table.Writer
+	repository *repository.ApiService
 	cliApp cli.App
+
+	exitCh chan struct{}
 
 	flagsMap map[string]cli.Flag
 	//  below is arguments controlled by ./flags.go
@@ -34,11 +29,16 @@ type appService struct {
 	timeout int
 	input   string
 	auth    string
+
+	cliStartedCb CbCliStarted
 }
 
-func New(writer table.Writer) AppService {
+type CbCliStarted = func(url string)
+
+func New(repository *repository.ApiService, cb CbCliStarted) AppService {
 	return &appService{
-		writer: writer,
+		cliStartedCb: cb,
+		repository:   repository,
 		cliApp: cli.App{
 			Name:        "nfc-cli",
 			Version:     "v0.0.1",
@@ -54,20 +54,11 @@ func (s *appService) Start() error {
 	sort.Sort(cli.FlagsByName(s.cliApp.Flags))
 	sort.Sort(cli.CommandsByName(s.cliApp.Commands))
 
-	err := s.cliApp.Run(os.Args)
-
-	if err != nil {
-		return errors.Wrap(err, " Can't start thee cli application:\n")
-	}
-	return nil
+	return s.cliApp.Run(os.Args)
 }
 
-func (s *appService) GetHost() string {
-	return s.host
-}
-
-func (s *appService) SetActionService(a actions.ActionService) {
-	s.actions = a
+func (s *appService) SetRepository(r *repository.ApiService)  {
+	s.repository = r
 }
 
 func (s *appService) getCommands() []*cli.Command {

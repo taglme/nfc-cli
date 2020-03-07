@@ -1,18 +1,25 @@
 package main
 
 import (
-	"github.com/jedib0t/go-pretty/table"
+	"github.com/taglme/nfc-cli/repository"
 	"github.com/taglme/nfc-cli/service"
+	"github.com/taglme/nfc-client/pkg/client"
 	"log"
-	"os"
 )
 
 func main() {
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(table.StyleRounded)
+	var nfc *client.Client
+	var rep *repository.ApiService
+	var app service.AppService
 
-	app := service.New(t)
+	cbCliStarted := func(url string) {
+		nfc = client.New(url, "en")
+		rep = repository.New(&nfc)
+		app.SetRepository(rep)
+	}
+
+	app = service.New(rep, cbCliStarted)
+
 	err := app.Start()
 
 	if err != nil {
