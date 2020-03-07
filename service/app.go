@@ -1,12 +1,13 @@
 package service
 
 import (
-	"fmt"
+	"github.com/jedib0t/go-pretty/table"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/actions"
 	"github.com/taglme/nfc-client/pkg/client"
 	"github.com/urfave/cli/v2"
 	"os"
+	"sort"
 )
 
 type AppService interface {
@@ -18,13 +19,15 @@ type AppService interface {
 type appService struct {
 	actions   actions.ActionService
 	nfcClient *client.Client
+	writer    table.Writer
 	host      string
 	adapter   int
 	cliApp    cli.App
 }
 
-func New() AppService {
+func New(writer table.Writer) AppService {
 	return &appService{
+		writer: writer,
 		cliApp: cli.App{
 			Name:        "nfc-cli",
 			Version:     "v0.0.1",
@@ -35,6 +38,9 @@ func New() AppService {
 
 func (s *appService) Start() error {
 	s.cliApp.Commands = s.getCommands()
+
+	sort.Sort(cli.FlagsByName(s.cliApp.Flags))
+	sort.Sort(cli.CommandsByName(s.cliApp.Commands))
 
 	err := s.cliApp.Run(os.Args)
 
@@ -79,25 +85,10 @@ func (s *appService) getCommands() []*cli.Command {
 			Action: s.cmdVersion,
 		},
 		{
-			Name:  "adapters",
-			Usage: "Get adapters list",
-			Flags: s.getFlags(),
-			Action: func(c *cli.Context) error {
-				fmt.Println(s.host)
-				return nil
-			},
+			Name:   "adapters",
+			Usage:  "Get adapters list",
+			Flags:  s.getFlags(),
+			Action: s.cmdAdapters,
 		},
 	}
-}
-
-func (s *appService) cmdVersion(ctx *cli.Context) error {
-	s.nfcClient = client.New(s.host, "en")
-	s.actions = actions.New(s.nfcClient)
-
-	info, err := s.actions.GetVersion()
-	if err != nil {
-		return errors.Wrap(err, "Can't get application info")
-	}
-	fmt.Println(info)
-	return nil
 }

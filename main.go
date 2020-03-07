@@ -1,20 +1,19 @@
 package main
 
 import (
+	"github.com/jedib0t/go-pretty/table"
 	"github.com/taglme/nfc-cli/service"
 	"log"
+	"os"
 )
 
 func main() {
-	//var adapterStr string
-	//var host string
-	//var nfcClient *client.Client
-	//
-	//sort.Sort(cli.FlagsByName(app.Flags))
-	//sort.Sort(cli.CommandsByName(app.Commands))
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
 
-	app := service.New()
+	app := service.New(t)
 	err := app.Start()
+
 	if err != nil {
 		log.Fatal(err)
 	}
