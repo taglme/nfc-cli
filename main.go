@@ -1,9 +1,7 @@
 package main
 
 import (
-	"github.com/taglme/nfc-cli/actions"
 	"github.com/taglme/nfc-cli/service"
-	"github.com/taglme/nfc-client/pkg/client"
 	"log"
 )
 
@@ -20,8 +18,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	nfcClient := client.New(app.GetHost(), "en")
-	actionService := actions.New(nfcClient)
-	app.SetActionService(actionService)
 }

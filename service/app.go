@@ -16,24 +16,19 @@ type AppService interface {
 }
 
 type appService struct {
-	actions    actions.ActionService
-	host       string
-	adapterStr string
-	cliApp     cli.App
-	actionsConstr FNewActionService
-	nfcClientConstr FNewNfcClient
+	actions   actions.ActionService
+	nfcClient *client.Client
+	host      string
+	adapter   int
+	cliApp    cli.App
 }
 
-type FNewActionService func(client client.Client) actions.ActionService
-type FNewNfcClient func(string, string) client.Client
-
-func New(a FNewActionService, nfc FNewNfcClient) AppService {
+func New() AppService {
 	return &appService{
 		cliApp: cli.App{
 			Name:        "nfc-cli",
 			Version:     "v0.0.1",
 			Description: "Cross-platform CLI for reading NFC tags ",
-			ac
 		},
 	}
 }
@@ -44,7 +39,7 @@ func (s *appService) Start() error {
 	err := s.cliApp.Run(os.Args)
 
 	if err != nil {
-		return errors.Wrap(err, "Can't start thee cli application:\n")
+		return errors.Wrap(err, " Can't start thee cli application:\n")
 	}
 	return nil
 }
@@ -65,12 +60,12 @@ func (s *appService) getFlags() []cli.Flag {
 			Usage:       "Target host and port",
 			Destination: &s.host,
 		},
-		&cli.StringFlag{
+		&cli.IntFlag{
 			Name:        "adapter",
-			Value:       "1",
+			Value:       1,
 			Usage:       "Adapter",
 			Aliases:     []string{"a"},
-			Destination: &s.adapterStr,
+			Destination: &s.adapter,
 		},
 	}
 }
@@ -78,9 +73,9 @@ func (s *appService) getFlags() []cli.Flag {
 func (s *appService) getCommands() []*cli.Command {
 	return []*cli.Command{
 		{
-			Name:  "version",
-			Usage: "Application version",
-			Flags: s.getFlags(),
+			Name:   "version",
+			Usage:  "Application version",
+			Flags:  s.getFlags(),
 			Action: s.cmdVersion,
 		},
 		{
@@ -96,10 +91,13 @@ func (s *appService) getCommands() []*cli.Command {
 }
 
 func (s *appService) cmdVersion(ctx *cli.Context) error {
-	if s.actions != nil {
-		info, err := s.actions.GetVersion()
+	s.nfcClient = client.New(s.host, "en")
+	s.actions = actions.New(s.nfcClient)
 
-		fmt.Println(info, err, s.host)
+	info, err := s.actions.GetVersion()
+	if err != nil {
+		return errors.Wrap(err, "Can't get application info")
 	}
+	fmt.Println(info)
 	return nil
 }
