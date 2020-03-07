@@ -25,6 +25,7 @@ func (s *ApiService) GetVersion() (apiModels.AppInfo, error) {
 		return i, err
 	}
 	s.printer.PrintAppInfo(i)
+	s.printer.Reset()
 	return i, err
 }
 
@@ -34,6 +35,7 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 		return a, err
 	}
 	s.printer.PrintAdapters(a)
+	s.printer.Reset()
 	return a, err
 }
 
@@ -52,6 +54,8 @@ func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire
 	s.printer.PrintJob(j)
 	s.printer.Reset()
 	fmt.Println("\nJob steps:")
+	s.printer.PrintJobSteps(j.Steps)
+	s.printer.Reset()
 
 	return j, err
 }

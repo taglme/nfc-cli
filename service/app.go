@@ -15,7 +15,7 @@ type AppService interface {
 
 type appService struct {
 	repository *repository.ApiService
-	cliApp cli.App
+	cliApp     cli.App
 
 	exitCh chan struct{}
 
@@ -57,7 +57,7 @@ func (s *appService) Start() error {
 	return s.cliApp.Run(os.Args)
 }
 
-func (s *appService) SetRepository(r *repository.ApiService)  {
+func (s *appService) SetRepository(r *repository.ApiService) {
 	s.repository = r
 }
 

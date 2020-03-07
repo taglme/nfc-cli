@@ -12,6 +12,9 @@ type PrinterService interface {
 	PrintAdapters([]apiModels.Adapter)
 	PrintJob(apiModels.Job)
 	PrintJobSteps([]apiModels.JobStep)
+	PrintTag(apiModels.Tag)
+	PrintStepResults([]apiModels.StepResult)
+	PrintJobRun(apiModels.JobRun)
 }
 
 type printerService struct {
@@ -120,6 +123,78 @@ func (s *printerService) PrintJobSteps(js []apiModels.JobStep) {
 			step.Params,
 		})
 	}
+
+	s.writer.Render()
+}
+
+func (s *printerService) PrintJobRun(j apiModels.JobRun) {
+	s.writer.AppendHeader(table.Row{
+		"Run ID",
+		"Job ID",
+		"Job Name",
+		"Status",
+		"Adapter ID",
+		"Adapter Name",
+		"Created at",
+	})
+
+	s.writer.AppendRow(table.Row{
+		j.RunID,
+		j.JobID,
+		j.JobName,
+		j.Status.String(),
+		j.AdapterID,
+		j.AdapterName,
+		j.CreatedAt.String(),
+	})
+
+	s.writer.Render()
+}
+
+func (s *printerService) PrintStepResults(r []apiModels.StepResult) {
+	s.writer.AppendHeader(table.Row{
+		"Command",
+		"Params",
+		"Output",
+		"Status",
+		"Message",
+	})
+
+	for _, sr := range r {
+		s.writer.AppendRow(table.Row{
+			sr.Command.String(),
+			sr.Params,
+			sr.Output,
+			sr.Status.String(),
+			sr.Message,
+		})
+	}
+
+	s.writer.Render()
+}
+
+func (s *printerService) PrintTag(t apiModels.Tag) {
+	s.writer.AppendHeader(table.Row{
+		"Tag ID",
+		"Type",
+		"Adapter ID",
+		"Adapter Name",
+		"Uid",
+		"Atr",
+		"Product",
+		"Vendor",
+	})
+
+	s.writer.AppendRow(table.Row{
+		t.TagID,
+		t.Type.String(),
+		t.AdapterID,
+		t.AdapterName,
+		t.Uid,
+		t.Atr,
+		t.Product,
+		t.Vendor,
+	})
 
 	s.writer.Render()
 }
