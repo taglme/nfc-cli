@@ -4,6 +4,7 @@ import (
 	"github.com/jedib0t/go-pretty/table"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/actions"
+	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-client/pkg/client"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -72,26 +73,34 @@ func (s *appService) SetActionService(a actions.ActionService) {
 func (s *appService) getCommands() []*cli.Command {
 	return []*cli.Command{
 		{
-			Name:  "version",
+			Name:  models.CommandVersion,
 			Usage: "Application version",
 			Flags: []cli.Flag{
-				s.flagsMap[FlagHost],
+				s.flagsMap[models.FlagHost],
 			},
 			Action: s.cmdVersion,
 		},
 		{
-			Name:  "adapters",
+			Name:  models.CommandAdapters,
 			Usage: "Get adapters list",
 			Flags: []cli.Flag{
-				s.flagsMap[FlagHost],
+				s.flagsMap[models.FlagHost],
 			},
 			Action: s.cmdAdapters,
 		},
-		//{
-		//	Name:   "read",
-		//	Usage:  "Read tag data with NDEF message",
-		//	Flags:  s.getFlags(),
-		//	Action: s.cmdAdapters,
-		//},
+		{
+			Name:  models.CommandRead,
+			Usage: "Read tag data with NDEF message",
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapters],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+			},
+			Action: s.cmdRead,
+		},
 	}
 }

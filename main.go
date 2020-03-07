@@ -10,6 +10,7 @@ import (
 func main() {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	t.SetStyle(table.StyleRounded)
 
 	app := service.New(t)
 	err := app.Start()
