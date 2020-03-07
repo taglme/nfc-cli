@@ -13,8 +13,8 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 			Usage:       "Target host and port",
 			Destination: &s.host,
 		},
-		models.FlagAdapters: &cli.IntFlag{
-			Name:        models.FlagAdapters,
+		models.FlagAdapter: &cli.IntFlag{
+			Name:        models.FlagAdapter,
 			Value:       1,
 			Usage:       "Adapter",
 			Destination: &s.adapter,

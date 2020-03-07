@@ -42,8 +42,14 @@ func (s *appService) cmdRead(*cli.Context) error {
 	}
 	defer s.repository.StopWsConnection()
 
-	// TODO: might be adapterId
-	_, err = s.repository.AddJob(models.CommandRead, "7f1d71b6-875a-463e-a835-707cebe1bc8c", s.repeat, s.timeout)
+
+	fmt.Println("Available adapters:")
+	adapters, err := s.repository.GetAdapters()
+	if s.adapter <= 0 || s.adapter > len(adapters) {
+		return errors.New("Can't find adapter with such index")
+	}
+
+	_, err = s.repository.AddJob(models.CommandRead, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout)
 
 	go func(ctx context.Context) {
 		fmt.Println("Waiting for Job deleted event. Press ^C to stop.")

@@ -84,7 +84,7 @@ func (s *appService) getCommands() []*cli.Command {
 			Usage: "Read tag data with NDEF message",
 			Flags: []cli.Flag{
 				s.flagsMap[models.FlagHost],
-				s.flagsMap[models.FlagAdapters],
+				s.flagsMap[models.FlagAdapter],
 				s.flagsMap[models.FlagRepeat],
 				s.flagsMap[models.FlagOutput],
 				s.flagsMap[models.FlagAppend],
