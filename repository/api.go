@@ -69,6 +69,7 @@ func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire
 
 var MapCliCmdToApiCmd = map[models.Command]apiModels.Command{
 	models.CommandRead: apiModels.CommandReadNdef,
+	models.CommandDump: apiModels.CommandGetDump,
 }
 
 var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
@@ -79,6 +80,12 @@ var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
 		}, {
 			Command: apiModels.CommandReadNdef.String(),
 			Params:  apiModels.ReadNdefParamsResource{},
+		},
+	},
+	models.CommandDump: {
+		{
+			Command: apiModels.CommandGetDump.String(),
+			Params:  apiModels.GetDumpParamsResource{},
 		},
 	},
 }

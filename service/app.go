@@ -93,5 +93,19 @@ func (s *appService) getCommands() []*cli.Command {
 			},
 			Action: s.cmdRead,
 		},
+		{
+			Name:  models.CommandDump,
+			Usage: "Dump tag memory",
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+			},
+			Action: s.cmdDump,
+		},
 	}
 }
