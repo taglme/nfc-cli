@@ -1,9 +1,24 @@
 package service
 
 import (
+	"encoding/hex"
+	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/urfave/cli/v2"
+	"strings"
 )
+
+
+
+func (s *appService) parseAuthString(pwd string) (res []byte, err error) {
+	decoded, err := hex.DecodeString(strings.Replace(pwd, " ", "", -1))
+	if err != nil {
+		return res, errors.Wrap(err, "Can't decode password string")
+	}
+
+	return decoded, nil
+}
+
 
 func (s *appService) getFlagsMap() map[string]cli.Flag {
 	return map[string]cli.Flag{

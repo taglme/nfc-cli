@@ -6,10 +6,10 @@ import (
 	apiModels "github.com/taglme/nfc-client/pkg/models"
 )
 
-func (s *ApiService) RunWsConnection(handler func(models.Event)) error {
+func (s *ApiService) RunWsConnection(handler func(models.Event, interface{})) error {
 	s.client.Ws.OnEvent(func(event apiModels.Event) {
 		s.eventHandler(event)
-		handler(MapApiEventNameToCliEvent[event.Name])
+		handler(MapApiEventNameToCliEvent[event.Name], event.Data)
 	})
 
 	err := s.client.Ws.Connect()

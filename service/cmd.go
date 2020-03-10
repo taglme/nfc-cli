@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/hex"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
@@ -10,7 +9,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"time"
 )
 
@@ -28,8 +26,16 @@ func (s *appService) cmdAdapters(*cli.Context) error {
 	return err
 }
 
-func (s *appService) eventHandler(e models.Event) {
+func (s *appService) eventHandler(e models.Event, data interface{}) {
 	s.cliStartedCb(s.host)
+
+	if e == models.EventJobFinished && len(s.output) > 0 {
+		err := s.writeToFile(s.output, data)
+		if err != nil {
+			log.Println("Can't write to the file: ", err)
+		}
+	}
+
 	if e == models.EventJobFinished || e == models.EventJobDeleted {
 		s.exitCh <- struct{}{}
 	}
@@ -86,13 +92,4 @@ func (s *appService) cmdRead(*cli.Context) error {
 	<-s.exitCh
 
 	return err
-}
-
-func (s *appService) parseAuthString(pwd string) (res []byte, err error) {
-	decoded, err := hex.DecodeString(strings.Replace(pwd, " ", "", -1))
-	if err != nil {
-		return res, errors.Wrap(err, "Can't decode password string")
-	}
-
-	return decoded, nil
 }
