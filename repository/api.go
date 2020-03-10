@@ -70,6 +70,7 @@ func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire
 var MapCliCmdToApiCmd = map[models.Command]apiModels.Command{
 	models.CommandRead: apiModels.CommandReadNdef,
 	models.CommandDump: apiModels.CommandGetDump,
+	models.CommandLock: apiModels.CommandLockPermanent,
 }
 
 var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
@@ -86,6 +87,12 @@ var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
 		{
 			Command: apiModels.CommandGetDump.String(),
 			Params:  apiModels.GetDumpParamsResource{},
+		},
+	},
+	models.CommandLock: {
+		{
+			Command: apiModels.CommandLockPermanent.String(),
+			Params:  apiModels.LockPermanentParamsResource{},
 		},
 	},
 }

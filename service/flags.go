@@ -11,6 +11,10 @@ import (
 
 
 func (s *appService) parseAuthString(pwd string) (res []byte, err error) {
+	if len(pwd) <= 0 {
+		return res, nil
+	}
+
 	decoded, err := hex.DecodeString(strings.Replace(pwd, " ", "", -1))
 	if err != nil {
 		return res, errors.Wrap(err, "Can't decode password string")

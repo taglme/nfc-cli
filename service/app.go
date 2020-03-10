@@ -91,7 +91,9 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 			},
-			Action: s.cmdRead,
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdRead)
+			},
 		},
 		{
 			Name:  models.CommandDump,
@@ -105,7 +107,25 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 			},
-			Action: s.cmdDump,
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdDump)
+			},
+		},
+		{
+			Name:  models.CommandLock,
+			Usage: "Lock tag memory",
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+			},
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdLock)
+			},
 		},
 	}
 }
