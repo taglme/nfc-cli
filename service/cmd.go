@@ -53,7 +53,7 @@ func (s *appService) cmdRead(*cli.Context) error {
 		log.Println("Can't parse password string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandRead, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(models.CommandRead, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
 	return err
 }
 
@@ -69,7 +69,7 @@ func (s *appService) cmdDump(*cli.Context) error {
 		log.Println("Can't parse password string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandDump, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(models.CommandDump, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
 	return err
 }
 
@@ -85,7 +85,7 @@ func (s *appService) cmdLock(*cli.Context) error {
 		log.Println("Can't parse password string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandLock, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(models.CommandLock, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
 	return err
 }
 
@@ -101,7 +101,7 @@ func (s *appService) cmdFormat(*cli.Context) error {
 		log.Println("Can't parse password string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandFormat, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(models.CommandFormat, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
 	return err
 }
 
@@ -117,7 +117,7 @@ func (s *appService) cmdRmPwd(*cli.Context) error {
 		log.Println("Can't parse password string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandRmpwd, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(models.CommandRmpwd, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
 	return err
 }
 
@@ -138,7 +138,33 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddSetPwdJob(models.CommandRmpwd, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, auth, password)
+	_, err = s.repository.AddSetPwdJob(adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, auth, password)
+	return err
+}
+
+func (s *appService) cmdTransmit(ctx *cli.Context) error {
+	fmt.Println("Available adapters:")
+	adapters, err := s.repository.GetAdapters()
+	if s.adapter <= 0 || s.adapter > len(adapters) {
+		return errors.New("Can't find adapter with such index")
+	}
+
+	target := ctx.String(models.FlagTarget)
+	if target != "tag" && target != "adapter" {
+		return errors.New("Wrong target flag value. Can be either \"tag\" or \"adapter\".")
+	}
+
+	txBytes, err := s.parseHexString(ctx.String(models.FlagTxBytes))
+	if err != nil {
+		return errors.Wrap(err, "Can't parse password arg: ")
+	}
+
+	auth, err := s.parseHexString(s.auth)
+	if err != nil {
+		log.Println("Can't parse auth string")
+	}
+
+	_, err = s.repository.AddTransmitJob(adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, auth, txBytes, target)
 	return err
 }
 

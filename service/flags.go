@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-
-
 func (s *appService) parseHexString(hexStr string) (res []byte, err error) {
 	if len(hexStr) <= 0 {
 		return res, nil
@@ -22,7 +20,6 @@ func (s *appService) parseHexString(hexStr string) (res []byte, err error) {
 
 	return decoded, nil
 }
-
 
 func (s *appService) getFlagsMap() map[string]cli.Flag {
 	return map[string]cli.Flag{
@@ -72,9 +69,19 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 			Destination: &s.auth,
 		},
 		models.FlagPwd: &cli.StringFlag{
-			Name:        models.FlagPwd,
-			Usage:       "Password to get an access to the memory of the NFC tag. The value of the argument is indicated as an array of bytes in hex format. Example \"03 AD F3 41\"",
-			Required:	true,
+			Name:     models.FlagPwd,
+			Usage:    "Password to get an access to the memory of the NFC tag. The value of the argument is indicated as an array of bytes in hex format. Example \"03 AD F3 41\"",
+			Required: true,
+		},
+		models.FlagTarget: &cli.StringFlag{
+			Name:  models.FlagTarget,
+			Usage: "Indicating to whom the byte array is sent. Optional. Can be tag or adapter. If not specified, the 'tag' value applies.",
+			Value: "tag",
+		},
+		models.FlagTxBytes: &cli.StringFlag{
+			Name:     models.FlagTxBytes,
+			Usage:    "Array of bytes transmitted in hex format. Mandatory.",
+			Required: true,
 		},
 	}
 }

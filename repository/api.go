@@ -64,7 +64,7 @@ func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, pwd []byte) (
 
 func (s *ApiService) AddGenericJob(cmd models.Command, adapterId string, repeat, expire int, pwd []byte) (apiModels.Job, error) {
 	nj := apiModels.NewJob{
-		JobName:     MapCliCmdToApiCmd[cmd].String(),
+		JobName:     MapCliCmdToJobName[cmd],
 		Repeat:      repeat,
 		ExpireAfter: expire,
 		Steps:       MapCliCmdToApiJobSteps[cmd],
@@ -73,10 +73,10 @@ func (s *ApiService) AddGenericJob(cmd models.Command, adapterId string, repeat,
 	return s.addJob(nj, adapterId, pwd)
 }
 
-func (s *ApiService) AddSetPwdJob(cmd models.Command, adapterId string, repeat, expire int, auth, password []byte) (apiModels.Job, error) {
+func (s *ApiService) AddSetPwdJob(adapterId string, repeat, expire int, auth, password []byte) (apiModels.Job, error) {
 	jobStep := apiModels.JobStep{
 		Command: apiModels.CommandSetPassword,
-		Params:  apiModels.SetPasswordParams{
+		Params: apiModels.SetPasswordParams{
 			Password: password,
 		},
 	}
@@ -84,7 +84,7 @@ func (s *ApiService) AddSetPwdJob(cmd models.Command, adapterId string, repeat, 
 	jobStepResource := jobStep.ToResource()
 
 	nj := apiModels.NewJob{
-		JobName:     MapCliCmdToApiCmd[cmd].String(),
+		JobName:     "Set tag password",
 		Repeat:      repeat,
 		ExpireAfter: expire,
 		Steps:       []apiModels.JobStepResource{jobStepResource},
@@ -93,12 +93,43 @@ func (s *ApiService) AddSetPwdJob(cmd models.Command, adapterId string, repeat, 
 	return s.addJob(nj, adapterId, auth)
 }
 
-var MapCliCmdToApiCmd = map[models.Command]apiModels.Command{
-	models.CommandRead: apiModels.CommandReadNdef,
-	models.CommandDump: apiModels.CommandGetDump,
-	models.CommandLock: apiModels.CommandLockPermanent,
-	models.CommandFormat: apiModels.CommandFormatDefault,
-	models.CommandRmpwd: apiModels.CommandRemovePassword,
+func (s *ApiService) AddTransmitJob(adapterId string, repeat, expire int, auth, txBytes []byte, target string) (apiModels.Job, error) {
+	var nj apiModels.NewJob
+	var jobStep apiModels.JobStep
+
+	if target == "adapter" {
+		nj.JobName = "Transmit adapter"
+		jobStep = apiModels.JobStep{
+			Command: apiModels.CommandTransmitAdapter,
+			Params: apiModels.TransmitAdapterParams{
+				TxBytes: txBytes,
+			},
+		}
+	} else {
+		nj.JobName = "Transmit tag"
+		jobStep = apiModels.JobStep{
+			Command: apiModels.CommandTransmitTag,
+			Params: apiModels.TransmitTagParams{
+				TxBytes: txBytes,
+			},
+		}
+	}
+
+	jobStepResource := jobStep.ToResource()
+
+	nj.Repeat = repeat
+	nj.ExpireAfter = expire
+	nj.Steps = []apiModels.JobStepResource{jobStepResource}
+
+	return s.addJob(nj, adapterId, auth)
+}
+
+var MapCliCmdToJobName = map[models.Command]string{
+	models.CommandRead:   "Read tag",
+	models.CommandDump:   "Dump tag",
+	models.CommandLock:   "Lock tag",
+	models.CommandFormat: "Format tag",
+	models.CommandRmpwd:  "Remove tag password",
 }
 
 var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
@@ -151,7 +182,6 @@ var MapApiEventNameToCliEvent = map[apiModels.EventName]models.Event{
 	apiModels.EventNameRunSuccess:       models.EventRunSuccess,
 	apiModels.EventNameRunError:         models.EventRunError,
 }
-
 
 func (s *ApiService) getAuthJobStep(pwd []byte) *apiModels.JobStepResource {
 	encodedString := base64.StdEncoding.EncodeToString(pwd)

@@ -176,5 +176,24 @@ func (s *appService) getCommands() []*cli.Command {
 				return s.withWsConnect(ctx, s.cmdSetPwd)
 			},
 		},
+		{
+			Name:  models.CommandTransmit,
+			Usage: "Transmit bytes to adapter or tag",
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagInput],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagTarget],
+				s.flagsMap[models.FlagTxBytes],
+			},
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdTransmit)
+			},
+		},
 	}
 }

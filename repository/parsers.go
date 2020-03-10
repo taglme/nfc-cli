@@ -49,7 +49,6 @@ func parseJobRunStruct(data interface{}) (jr apiModels.JobRun) {
 
 	jr.Tag = parseTagStruct(m["tag"])
 
-
 	if results, ok := m["results"].([]interface{}); ok {
 		jr.Results = make([]apiModels.StepResult, len(results))
 		for i, rd := range results {
@@ -106,7 +105,7 @@ func parseTagStruct(data interface{}) (t apiModels.Tag) {
 		t.Atr = dAtr
 	}
 
-	return  t
+	return t
 }
 
 func parseStepResultStruct(data interface{}) (sr apiModels.StepResult) {
@@ -148,7 +147,7 @@ func parseParamsByCmd(command apiModels.Command, data map[string]interface{}) ap
 	case apiModels.CommandTransmitAdapter:
 		if tx, ok := data["tx_bytes"].(string); ok {
 			res, err := apiModels.TransmitAdapterParamsResource{
-				TxBytes:tx,
+				TxBytes: tx,
 			}.ToParams()
 			if err != nil {
 				fmt.Println("Can't convert TransmitAdapterParamsResource", err)
@@ -158,7 +157,7 @@ func parseParamsByCmd(command apiModels.Command, data map[string]interface{}) ap
 	case apiModels.CommandTransmitTag:
 		if tx, ok := data["tx_bytes"].(string); ok {
 			res, err := apiModels.TransmitTagParamsResource{
-				TxBytes:tx,
+				TxBytes: tx,
 			}.ToParams()
 			if err != nil {
 				fmt.Println("Can't convert TransmitTagParams", err)
@@ -181,7 +180,6 @@ func parseParamsByCmd(command apiModels.Command, data map[string]interface{}) ap
 					resMsg.Type = recT
 				}
 
-
 				if ndefData, ok := md["data"].(map[string]interface{}); ok {
 					resMsg.Data = parseNdefPayloadResourceByNdefPayloadType(resMsg.Type, ndefData)
 				}
@@ -199,7 +197,7 @@ func parseParamsByCmd(command apiModels.Command, data map[string]interface{}) ap
 	case apiModels.CommandSetPassword:
 		if pwd, ok := data["password"].(string); ok {
 			res, err := apiModels.SetPasswordParamsResource{
-				Password:pwd,
+				Password: pwd,
 			}.ToParams()
 			if err != nil {
 				fmt.Println("Can't convert AuthPasswordParamsResource", err)
@@ -211,7 +209,7 @@ func parseParamsByCmd(command apiModels.Command, data map[string]interface{}) ap
 	case apiModels.CommandAuthPassword:
 		if pwd, ok := data["password"].(string); ok {
 			res, err := apiModels.AuthPasswordParamsResource{
-				Password:pwd,
+				Password: pwd,
 			}.ToParams()
 			if err != nil {
 				fmt.Println("Can't convert AuthPasswordParamsResource", err)
@@ -223,7 +221,7 @@ func parseParamsByCmd(command apiModels.Command, data map[string]interface{}) ap
 	case apiModels.CommandSetLocale:
 		if locale, ok := data["locale"].(string); ok {
 			res, err := apiModels.SetLocaleParamsResource{
-				Locale:locale,
+				Locale: locale,
 			}.ToParams()
 			if err != nil {
 				fmt.Println("Can't convert SetLocaleParamsResource", err)
@@ -398,7 +396,6 @@ func parseNdefPayloadResourceByNdefPayloadType(t ndefconv.NdefRecordPayloadType,
 	return nil
 }
 
-
 func parseOutputByCmd(command apiModels.Command, data map[string]interface{}) apiModels.CommandOutput {
 	switch command {
 	case apiModels.CommandGetTags:
@@ -454,7 +451,6 @@ func parseOutputByCmd(command apiModels.Command, data map[string]interface{}) ap
 						}
 						resMsg.Type = recT
 					}
-
 
 					if ndefData, ok := md["data"].(map[string]interface{}); ok {
 						resMsg.Data = parseNdefPayloadResourceByNdefPayloadType(resMsg.Type, ndefData)
