@@ -143,5 +143,21 @@ func (s *appService) getCommands() []*cli.Command {
 				return s.withWsConnect(ctx, s.cmdFormat)
 			},
 		},
+		{
+			Name:  models.CommandRmpwd,
+			Usage: "Lock tag memory",
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+			},
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdRmPwd)
+			},
+		},
 	}
 }

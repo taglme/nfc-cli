@@ -72,6 +72,7 @@ var MapCliCmdToApiCmd = map[models.Command]apiModels.Command{
 	models.CommandDump: apiModels.CommandGetDump,
 	models.CommandLock: apiModels.CommandLockPermanent,
 	models.CommandFormat: apiModels.CommandFormatDefault,
+	models.CommandRmpwd: apiModels.CommandRemovePassword,
 }
 
 var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
@@ -100,6 +101,12 @@ var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
 		{
 			Command: apiModels.CommandFormatDefault.String(),
 			Params:  apiModels.FormatDefaultParamsResource{},
+		},
+	},
+	models.CommandRmpwd: {
+		{
+			Command: apiModels.CommandRemovePassword.String(),
+			Params:  apiModels.RemovePasswordParamsResource{},
 		},
 	},
 }

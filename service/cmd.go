@@ -89,7 +89,6 @@ func (s *appService) cmdLock(*cli.Context) error {
 	return err
 }
 
-
 func (s *appService) cmdFormat(*cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
@@ -103,6 +102,22 @@ func (s *appService) cmdFormat(*cli.Context) error {
 	}
 
 	_, err = s.repository.AddJob(models.CommandFormat, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
+	return err
+}
+
+func (s *appService) cmdRmPwd(*cli.Context) error {
+	fmt.Println("Available adapters:")
+	adapters, err := s.repository.GetAdapters()
+	if s.adapter <= 0 || s.adapter > len(adapters) {
+		return errors.New("Can't find adapter with such index")
+	}
+
+	pwd, err := s.parseAuthString(s.auth)
+	if err != nil {
+		log.Println("Can't parse password string")
+	}
+
+	_, err = s.repository.AddJob(models.CommandRmpwd, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
 	return err
 }
 
