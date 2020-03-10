@@ -8,7 +8,7 @@ import (
 type ApiService interface {
 	GetVersion() (apiModels.AppInfo, error)
 	GetAdapters() ([]apiModels.Adapter, error)
-	AddJob(models.Command, string, int, int) (apiModels.Job, error)
+	AddJob(models.Command, string, int, int, []byte) (apiModels.Job, error)
 	RunWsConnection(func(models.Event)) error
 	StopWsConnection() error
 }

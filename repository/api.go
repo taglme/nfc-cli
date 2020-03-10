@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-client/pkg/client"
@@ -39,13 +40,19 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
-func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire int) (apiModels.Job, error) {
-	j, err := s.client.Jobs.Add(adapterId, apiModels.NewJob{
+func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire int, pwd []byte) (apiModels.Job, error) {
+	nj := apiModels.NewJob{
 		JobName:     MapCliCmdToApiCmd[cmd].String(),
 		Repeat:      repeat,
 		ExpireAfter: expire,
 		Steps:       MapCliCmdToApiJobSteps[cmd],
-	})
+	}
+
+	if pwd != nil {
+		nj.Steps = append(nj.Steps, *s.getAuthJobStep(pwd))
+	}
+
+	j, err := s.client.Jobs.Add(adapterId, nj)
 	if err != nil {
 		return j, err
 	}
@@ -89,4 +96,14 @@ var MapApiEventNameToCliEvent = map[apiModels.EventName]models.Event{
 	apiModels.EventNameRunStarted:       models.EventRunStarted,
 	apiModels.EventNameRunSuccess:       models.EventRunSuccess,
 	apiModels.EventNameRunError:         models.EventRunError,
+}
+
+
+func (s *ApiService) getAuthJobStep(pwd []byte) *apiModels.JobStepResource {
+	encodedString := base64.StdEncoding.EncodeToString(pwd)
+
+	return &apiModels.JobStepResource{
+		Command: apiModels.CommandAuthPassword.String(),
+		Params:  apiModels.AuthPasswordParamsResource{Password: encodedString},
+	}
 }

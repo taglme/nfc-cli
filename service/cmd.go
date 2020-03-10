@@ -2,12 +2,15 @@ package service
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/urfave/cli/v2"
+	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 )
 
@@ -49,7 +52,13 @@ func (s *appService) cmdRead(*cli.Context) error {
 		return errors.New("Can't find adapter with such index")
 	}
 
-	_, err = s.repository.AddJob(models.CommandRead, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout)
+
+	pwd, err := s.parseAuthString(s.auth)
+	if err != nil {
+		log.Println("Can't parse password string")
+	}
+
+	_, err = s.repository.AddJob(models.CommandRead, adapters[s.adapter - 1].AdapterID, s.repeat, s.timeout, pwd)
 
 	go func(ctx context.Context) {
 		fmt.Println("Waiting for Job deleted event. Press ^C to stop.")
@@ -77,4 +86,13 @@ func (s *appService) cmdRead(*cli.Context) error {
 	<-s.exitCh
 
 	return err
+}
+
+func (s *appService) parseAuthString(pwd string) (res []byte, err error) {
+	decoded, err := hex.DecodeString(strings.Replace(pwd, " ", "", -1))
+	if err != nil {
+		return res, errors.Wrap(err, "Can't decode password string")
+	}
+
+	return decoded, nil
 }
