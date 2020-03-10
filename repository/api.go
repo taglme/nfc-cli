@@ -71,6 +71,7 @@ var MapCliCmdToApiCmd = map[models.Command]apiModels.Command{
 	models.CommandRead: apiModels.CommandReadNdef,
 	models.CommandDump: apiModels.CommandGetDump,
 	models.CommandLock: apiModels.CommandLockPermanent,
+	models.CommandFormat: apiModels.CommandFormatDefault,
 }
 
 var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
@@ -93,6 +94,12 @@ var MapCliCmdToApiJobSteps = map[models.Command][]apiModels.JobStepResource{
 		{
 			Command: apiModels.CommandLockPermanent.String(),
 			Params:  apiModels.LockPermanentParamsResource{},
+		},
+	},
+	models.CommandFormat: {
+		{
+			Command: apiModels.CommandFormatDefault.String(),
+			Params:  apiModels.FormatDefaultParamsResource{},
 		},
 	},
 }
