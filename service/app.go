@@ -145,7 +145,7 @@ func (s *appService) getCommands() []*cli.Command {
 		},
 		{
 			Name:  models.CommandRmpwd,
-			Usage: "Lock tag memory",
+			Usage: "Remove password for tag write acccess",
 			Flags: []cli.Flag{
 				s.flagsMap[models.FlagHost],
 				s.flagsMap[models.FlagAdapter],
@@ -157,6 +157,23 @@ func (s *appService) getCommands() []*cli.Command {
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdRmPwd)
+			},
+		},
+		{
+			Name:  models.CommandSetpwd,
+			Usage: "Remove password for tag write acccess",
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagPwd],
+			},
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdSetPwd)
 			},
 		},
 	}

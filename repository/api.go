@@ -40,16 +40,11 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
-func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire int, pwd []byte) (apiModels.Job, error) {
-	nj := apiModels.NewJob{
-		JobName:     MapCliCmdToApiCmd[cmd].String(),
-		Repeat:      repeat,
-		ExpireAfter: expire,
-		Steps:       MapCliCmdToApiJobSteps[cmd],
-	}
-
+func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, pwd []byte) (apiModels.Job, error) {
 	if pwd != nil {
-		nj.Steps = append(nj.Steps, *s.getAuthJobStep(pwd))
+		nj.Steps = append(nj.Steps, apiModels.JobStepResource{})
+		copy(nj.Steps[1:], nj.Steps)
+		nj.Steps[0] = *s.getAuthJobStep(pwd)
 	}
 
 	j, err := s.client.Jobs.Add(adapterId, nj)
@@ -65,6 +60,37 @@ func (s *ApiService) AddJob(cmd models.Command, adapterId string, repeat, expire
 	s.printer.Reset()
 
 	return j, err
+}
+
+func (s *ApiService) AddGenericJob(cmd models.Command, adapterId string, repeat, expire int, pwd []byte) (apiModels.Job, error) {
+	nj := apiModels.NewJob{
+		JobName:     MapCliCmdToApiCmd[cmd].String(),
+		Repeat:      repeat,
+		ExpireAfter: expire,
+		Steps:       MapCliCmdToApiJobSteps[cmd],
+	}
+
+	return s.addJob(nj, adapterId, pwd)
+}
+
+func (s *ApiService) AddSetPwdJob(cmd models.Command, adapterId string, repeat, expire int, auth, password []byte) (apiModels.Job, error) {
+	jobStep := apiModels.JobStep{
+		Command: apiModels.CommandSetPassword,
+		Params:  apiModels.SetPasswordParams{
+			Password: password,
+		},
+	}
+
+	jobStepResource := jobStep.ToResource()
+
+	nj := apiModels.NewJob{
+		JobName:     MapCliCmdToApiCmd[cmd].String(),
+		Repeat:      repeat,
+		ExpireAfter: expire,
+		Steps:       []apiModels.JobStepResource{jobStepResource},
+	}
+
+	return s.addJob(nj, adapterId, auth)
 }
 
 var MapCliCmdToApiCmd = map[models.Command]apiModels.Command{

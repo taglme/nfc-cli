@@ -11,4 +11,5 @@ const (
 	FlagTimeout Flag = "timeout"
 	FlagInput   Flag = "input"
 	FlagAuth    Flag = "auth"
+	FlagPwd    Flag = "password"
 )

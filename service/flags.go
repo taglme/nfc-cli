@@ -10,14 +10,14 @@ import (
 
 
 
-func (s *appService) parseAuthString(pwd string) (res []byte, err error) {
-	if len(pwd) <= 0 {
+func (s *appService) parseHexString(hexStr string) (res []byte, err error) {
+	if len(hexStr) <= 0 {
 		return res, nil
 	}
 
-	decoded, err := hex.DecodeString(strings.Replace(pwd, " ", "", -1))
+	decoded, err := hex.DecodeString(strings.Replace(hexStr, " ", "", -1))
 	if err != nil {
-		return res, errors.Wrap(err, "Can't decode password string")
+		return res, errors.Wrap(err, "Can't decode hex string")
 	}
 
 	return decoded, nil
@@ -68,8 +68,13 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 		},
 		models.FlagAuth: &cli.StringFlag{
 			Name:        models.FlagAuth,
-			Usage:       "an indication of the need for authorization before starting operations. When this argument is specified, the authorization operation (API CommandAuthPassword API command) is included in the task as the first operation. The authorization operation must be the first in the list of operations. The value of the argument is indicated as an array of bytes in hex format. Example \"03 AD F3 41\"",
+			Usage:       "An indication of the need for authorization before starting operations. The value of the argument is indicated as an array of bytes in hex format. Example \"03 AD F3 41\"",
 			Destination: &s.auth,
+		},
+		models.FlagPwd: &cli.StringFlag{
+			Name:        models.FlagPwd,
+			Usage:       "Password to get an access to the memory of the NFC tag. The value of the argument is indicated as an array of bytes in hex format. Example \"03 AD F3 41\"",
+			Required:	true,
 		},
 	}
 }
