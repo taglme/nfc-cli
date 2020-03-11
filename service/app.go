@@ -249,20 +249,20 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagNdefTypeGeoLon],
 			},
 		},
-		//{
-		//	Name:  models.CommandRun,
-		//	Usage: "Load jobs from file and send them to server",
-		//	Action: func(ctx *cli.Context) error {
-		//		return s.withWsConnect(ctx, s.cmdRun)
-		//	},
-		//	Flags: []cli.Flag{
-		//		s.flagsMap[models.FlagHost],
-		//		s.flagsMap[models.FlagAdapter],
-		//		s.flagsMap[models.FlagOutput],
-		//		s.flagsMap[models.FlagAppend],
-		//		s.flagsMap[models.FlagTimeout],
-		//		s.flagsMap[models.FlagFile],
-		//	},
-		//},
+		{
+			Name:  models.CommandRun,
+			Usage: "Load jobs from file and send them to server",
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdRun)
+			},
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagFile],
+			},
+		},
 	}
 }

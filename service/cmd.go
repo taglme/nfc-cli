@@ -365,6 +365,23 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	return err
 }
 
+func (s *appService) cmdRun(ctx *cli.Context) error {
+	fmt.Println("Available adapters:")
+	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
+	if s.adapter <= 0 || s.adapter > len(adapters) {
+		return errors.New("Can't find adapter with such index")
+	}
+
+	file := ctx.String(models.FlagFile)
+
+	_, _, err = s.repository.AddJobFromFile(adapters[s.adapter-1].AdapterID, file, s.timeout)
+
+	return err
+}
+
 func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) error) error {
 	s.cliStartedCb(s.host)
 

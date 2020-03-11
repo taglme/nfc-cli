@@ -43,6 +43,29 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
+func (s *ApiService) AddJobFromFile(adapterId string, filename string, timeout int) (*apiModels.Job, *apiModels.NewJob, error) {
+	newJob, err := s.readFromFile(filename)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	newJob.ExpireAfter = timeout
+
+	j, err := s.client.Jobs.Add(adapterId, *newJob)
+	if err != nil {
+		return &j, newJob, err
+	}
+
+	fmt.Println("Job has been submitted:")
+	s.printer.PrintJob(j)
+	s.printer.Reset()
+	fmt.Println("\nJob steps:")
+	s.printer.PrintJobSteps(j.Steps)
+	s.printer.Reset()
+
+	return &j, newJob, err
+}
+
 func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte, export bool) (*apiModels.Job, *apiModels.NewJob, error) {
 	if auth != nil {
 		nj.Steps = append(nj.Steps, apiModels.JobStepResource{})

@@ -9,7 +9,7 @@ const (
 	FlagOutput  Flag = "output"
 	FlagAppend  Flag = "append"
 	FlagTimeout Flag = "timeout"
-	FlagFile    Flag = "input"
+	FlagFile    Flag = "file"
 	FlagAuth    Flag = "auth"
 	FlagJobName Flag = "name"
 	FlagExport  Flag = "export"
