@@ -3,7 +3,7 @@ export GO111MODULE=on
 all: deps lint test build
 
 build:
-	go build -mod=vendor ./main.go
+	go build -mod=vendor -o nfc-cli ./main.go
 
 lint:
 	golangci-lint run ./...
