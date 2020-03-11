@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/taglme/nfc-cli/models"
-	apiModels "github.com/taglme/nfc-client/pkg/models"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 )
 
 func (s *ApiService) RunWsConnection(handler func(models.Event, interface{})) error {

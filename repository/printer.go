@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/jedib0t/go-pretty/table"
-	apiModels "github.com/taglme/nfc-client/pkg/models"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 	"os"
 )
 

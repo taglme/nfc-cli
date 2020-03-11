@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/taglme/nfc-cli/repository"
 	"github.com/taglme/nfc-cli/service"
-	"github.com/taglme/nfc-client/pkg/client"
+	"github.com/taglme/nfc-goclient/pkg/client"
 	"log"
 )
 

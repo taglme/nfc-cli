@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-cli/ndef"
-	"github.com/taglme/nfc-client/pkg/client"
-	apiModels "github.com/taglme/nfc-client/pkg/models"
-	"github.com/taglme/nfc-client/pkg/ndefconv"
+	"github.com/taglme/nfc-goclient/pkg/client"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
+	"github.com/taglme/nfc-goclient/pkg/ndefconv"
 	"log"
 )
 

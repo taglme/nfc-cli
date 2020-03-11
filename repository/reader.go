@@ -3,7 +3,7 @@ package repository
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	apiModels "github.com/taglme/nfc-client/pkg/models"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 	"os"
 )
 

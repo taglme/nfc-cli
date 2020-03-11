@@ -2,7 +2,7 @@ package ndef
 
 import (
 	"github.com/taglme/nfc-cli/models"
-	"github.com/taglme/nfc-client/pkg/ndefconv"
+	"github.com/taglme/nfc-goclient/pkg/ndefconv"
 )
 
 type NdefPayload interface {

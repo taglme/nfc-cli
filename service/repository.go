@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-cli/ndef"
-	apiModels "github.com/taglme/nfc-client/pkg/models"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 )
 
 type ApiService interface {
