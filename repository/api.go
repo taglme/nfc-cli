@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/taglme/nfc-cli/models"
+	"github.com/taglme/nfc-cli/ndef"
 	"github.com/taglme/nfc-client/pkg/client"
 	apiModels "github.com/taglme/nfc-client/pkg/models"
+	"github.com/taglme/nfc-client/pkg/ndefconv"
 )
 
 type ApiService struct {
@@ -40,11 +42,11 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
-func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, pwd []byte) (apiModels.Job, error) {
-	if pwd != nil {
+func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, auth []byte) (apiModels.Job, error) {
+	if auth != nil {
 		nj.Steps = append(nj.Steps, apiModels.JobStepResource{})
 		copy(nj.Steps[1:], nj.Steps)
-		nj.Steps[0] = *s.getAuthJobStep(pwd)
+		nj.Steps[0] = *s.getAuthJobStep(auth)
 	}
 
 	j, err := s.client.Jobs.Add(adapterId, nj)
@@ -62,18 +64,18 @@ func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, pwd []byte) (
 	return j, err
 }
 
-func (s *ApiService) AddGenericJob(cmd models.Command, adapterId string, repeat, expire int, pwd []byte) (apiModels.Job, error) {
+func (s *ApiService) AddGenericJob(p models.GenericJobParams) (apiModels.Job, error) {
 	nj := apiModels.NewJob{
-		JobName:     MapCliCmdToJobName[cmd],
-		Repeat:      repeat,
-		ExpireAfter: expire,
-		Steps:       MapCliCmdToApiJobSteps[cmd],
+		JobName:     MapCliCmdToJobName[p.Cmd],
+		Repeat:      p.Repeat,
+		ExpireAfter: p.Expire,
+		Steps:       MapCliCmdToApiJobSteps[p.Cmd],
 	}
 
-	return s.addJob(nj, adapterId, pwd)
+	return s.addJob(nj, p.AdapterId, p.Auth)
 }
 
-func (s *ApiService) AddSetPwdJob(adapterId string, repeat, expire int, auth, password []byte) (apiModels.Job, error) {
+func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (apiModels.Job, error) {
 	jobStep := apiModels.JobStep{
 		Command: apiModels.CommandSetPassword,
 		Params: apiModels.SetPasswordParams{
@@ -85,15 +87,15 @@ func (s *ApiService) AddSetPwdJob(adapterId string, repeat, expire int, auth, pa
 
 	nj := apiModels.NewJob{
 		JobName:     "Set tag password",
-		Repeat:      repeat,
-		ExpireAfter: expire,
+		Repeat:      p.Repeat,
+		ExpireAfter: p.Expire,
 		Steps:       []apiModels.JobStepResource{jobStepResource},
 	}
 
-	return s.addJob(nj, adapterId, auth)
+	return s.addJob(nj, p.AdapterId, p.Auth)
 }
 
-func (s *ApiService) AddTransmitJob(adapterId string, repeat, expire int, auth, txBytes []byte, target string) (apiModels.Job, error) {
+func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (apiModels.Job, error) {
 	var nj apiModels.NewJob
 	var jobStep apiModels.JobStep
 
@@ -117,11 +119,40 @@ func (s *ApiService) AddTransmitJob(adapterId string, repeat, expire int, auth, 
 
 	jobStepResource := jobStep.ToResource()
 
-	nj.Repeat = repeat
-	nj.ExpireAfter = expire
+	nj.Repeat = p.Repeat
+	nj.ExpireAfter = p.Expire
 	nj.Steps = []apiModels.JobStepResource{jobStepResource}
 
-	return s.addJob(nj, adapterId, auth)
+	return s.addJob(nj, p.AdapterId, p.Auth)
+}
+
+func (s *ApiService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (apiModels.Job, error) {
+	var nj apiModels.NewJob
+
+	jobStep := apiModels.JobStep{
+		Command: apiModels.CommandWriteNdef,
+		Params: apiModels.WriteNdefParams{
+			Message: []ndefconv.NdefRecord{
+				r.ToRecord(),
+			},
+		},
+	}
+
+	nj.JobName = "Write tag"
+	nj.Repeat = p.Repeat
+	nj.ExpireAfter = p.Expire
+	nj.Steps = []apiModels.JobStepResource{jobStep.ToResource()}
+
+	if protect {
+		lockStep := apiModels.JobStep{
+			Command: apiModels.CommandLockPermanent,
+			Params:  apiModels.LockPermanentParams{},
+		}
+
+		nj.Steps = append(nj.Steps, lockStep.ToResource())
+	}
+
+	return s.addJob(nj, p.AdapterId, p.Auth)
 }
 
 var MapCliCmdToJobName = map[models.Command]string{

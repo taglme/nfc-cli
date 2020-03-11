@@ -44,86 +44,144 @@ func (s *appService) eventHandler(e models.Event, data interface{}) {
 func (s *appService) cmdRead(*cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
 
-	pwd, err := s.parseHexString(s.auth)
+	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse password string")
+		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandRead, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandRead,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+	)
 	return err
 }
 
 func (s *appService) cmdDump(*cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
 
-	pwd, err := s.parseHexString(s.auth)
+	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse password string")
+		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandDump, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandDump,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+	)
 	return err
 }
 
 func (s *appService) cmdLock(*cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
 
-	pwd, err := s.parseHexString(s.auth)
+	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse password string")
+		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandLock, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandLock,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+	)
 	return err
 }
 
 func (s *appService) cmdFormat(*cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
 
-	pwd, err := s.parseHexString(s.auth)
+	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse password string")
+		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandFormat, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandFormat,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+	)
 	return err
 }
 
 func (s *appService) cmdRmPwd(*cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
 
-	pwd, err := s.parseHexString(s.auth)
+	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse password string")
+		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(models.CommandRmpwd, adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, pwd)
+	_, err = s.repository.AddGenericJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandRmpwd,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+	)
 	return err
 }
 
 func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
@@ -138,13 +196,25 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddSetPwdJob(adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, auth, password)
+	_, err = s.repository.AddSetPwdJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandSetpwd,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+		password,
+	)
 	return err
 }
 
 func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
 	if s.adapter <= 0 || s.adapter > len(adapters) {
 		return errors.New("Can't find adapter with such index")
 	}
@@ -164,19 +234,69 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddTransmitJob(adapters[s.adapter-1].AdapterID, s.repeat, s.timeout, auth, txBytes, target)
+	_, err = s.repository.AddTransmitJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandTransmit,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+		txBytes,
+		target,
+	)
+	return err
+}
+
+func (s *appService) cmdWrite(ctx *cli.Context) error {
+	fmt.Println("Available adapters:")
+	adapters, err := s.repository.GetAdapters()
+	if err != nil {
+		return err
+	}
+	if s.adapter <= 0 || s.adapter > len(adapters) {
+		return errors.New("Can't find adapter with such index")
+	}
+
+	auth, err := s.parseHexString(s.auth)
+	if err != nil {
+		log.Println("Can't parse auth string")
+	}
+
+	payload, err := s.parseNdefPayloadFlags(ctx)
+	if err != nil {
+		return err
+	}
+
+	protect := ctx.Bool(models.FlagProtect)
+
+	_, err = s.repository.AddWriteJob(
+		models.GenericJobParams{
+			Cmd:       models.CommandTransmit,
+			AdapterId: adapters[s.adapter-1].AdapterID,
+			Repeat:    s.repeat,
+			Expire:    s.timeout,
+			Auth:      auth,
+		},
+		payload,
+		protect,
+	)
+
 	return err
 }
 
 func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) error) error {
 	s.cliStartedCb(s.host)
-	c1, cancel := context.WithCancel(context.Background())
-	s.exitCh = make(chan struct{})
 	err := s.repository.RunWsConnection(s.eventHandler)
 	if err != nil {
 		return errors.Wrap(err, "Can't establish the WS connection")
 	}
-	defer s.repository.StopWsConnection()
+	defer func() {
+		err = s.repository.StopWsConnection()
+		if err != nil {
+			log.Printf("Error on WS connection close: %s", err)
+		}
+	}()
 
 	err = cmdFunc(ctx)
 	if err != nil {
@@ -184,16 +304,18 @@ func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) 
 		return err
 	}
 
+	c1, cancel := context.WithCancel(context.Background())
+	s.exitCh = make(chan struct{})
 	go func(ctx context.Context) {
 		fmt.Println("Waiting for Job deleted event. Press ^C to stop.")
 		for {
 			select {
 			case <-ctx.Done():
 				fmt.Println("\nReceived done, exiting...")
-				time.Sleep(50 * time.Millisecond)
 				s.exitCh <- struct{}{}
 				return
 			default:
+				time.Sleep(50 * time.Millisecond)
 			}
 		}
 	}(c1)
@@ -201,8 +323,7 @@ func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) 
 	signalCh := make(chan os.Signal, 1)
 	signal.Notify(signalCh, os.Interrupt)
 	go func() {
-		select {
-		case <-signalCh:
+		for range signalCh {
 			cancel()
 			return
 		}

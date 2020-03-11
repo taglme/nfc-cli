@@ -83,5 +83,129 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 			Usage:    "Array of bytes transmitted in hex format. Mandatory.",
 			Required: true,
 		},
+
+		models.FlagNdefType: &cli.StringFlag{
+			Name:     models.FlagNdefType,
+			Usage:    "Indication of the type of record. Mandatory",
+			Required: true,
+		},
+		models.FlagProtect: &cli.BoolFlag{
+			Name:  models.FlagProtect,
+			Usage: "The need to lock the label after recording. Optional.",
+		},
+
+		models.FlagNdefTypeRawId: &cli.StringFlag{
+			Name:  models.FlagNdefTypeRawId,
+			Usage: "",
+		},
+		models.FlagNdefTypeRawTnf: &cli.IntFlag{
+			Name:  models.FlagNdefTypeRawTnf,
+			Usage: "",
+		},
+		models.FlagNdefTypeType: &cli.StringFlag{
+			Name:  models.FlagNdefTypeType,
+			Usage: "",
+		},
+		models.FlagNdefTypeRawPayload: &cli.StringFlag{
+			Name:  models.FlagNdefTypeRawPayload,
+			Usage: "",
+		},
+
+		models.FlagNdefTypeUrl: &cli.StringFlag{
+			Name:  models.FlagNdefTypeUrl,
+			Usage: "",
+		},
+		models.FlagNdefTypeText: &cli.StringFlag{
+			Name:  models.FlagNdefTypeText,
+			Usage: "",
+		},
+		models.FlagNdefTypeLang: &cli.StringFlag{
+			Name:  models.FlagNdefTypeLang,
+			Usage: "",
+		},
+		models.FlagNdefUri: &cli.StringFlag{
+			Name:  models.FlagNdefUri,
+			Usage: "",
+		},
+		models.FlagNdefTypeAarPackage: &cli.StringFlag{
+			Name:  models.FlagNdefTypeAarPackage,
+			Usage: "",
+		},
+		models.FlagNdefTypePhone: &cli.StringFlag{
+			Name:  models.FlagNdefTypePhone,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardAddressCity: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardAddressCity,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardAddressCountry: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardAddressCountry,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardAddressPostalCode: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardAddressPostalCode,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardAddressRegion: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardAddressRegion,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardAddressStreet: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardAddressStreet,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardEmail: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardEmail,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardFirstName: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardFirstName,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardLastName: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardLastName,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardOrganization: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardOrganization,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardPhoneCell: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardPhoneCell,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardPhoneHome: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardPhoneHome,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardPhoneWork: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardPhoneWork,
+			Usage: "",
+		},
+		models.FlagNdefTypeTitle: &cli.StringFlag{
+			Name:  models.FlagNdefTypeTitle,
+			Usage: "",
+		},
+		models.FlagNdefTypeVcardSite: &cli.StringFlag{
+			Name:  models.FlagNdefTypeVcardSite,
+			Usage: "",
+		},
+		models.FlagNdefTypeMimeFormat: &cli.StringFlag{
+			Name:  models.FlagNdefTypeMimeFormat,
+			Usage: "",
+		},
+		models.FlagNdefTypeMimeContent: &cli.StringFlag{
+			Name:  models.FlagNdefTypeMimeContent,
+			Usage: "",
+		},
+		models.FlagNdefTypeGeoLat: &cli.StringFlag{
+			Name:  models.FlagNdefTypeGeoLat,
+			Usage: "",
+		},
+		models.FlagNdefTypeGeoLon: &cli.StringFlag{
+			Name:  models.FlagNdefTypeGeoLon,
+			Usage: "",
+		},
 	}
 }

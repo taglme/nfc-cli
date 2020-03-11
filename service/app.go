@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/taglme/nfc-cli/models"
-	"github.com/taglme/nfc-cli/repository"
 	"github.com/urfave/cli/v2"
 	"os"
 	"sort"
@@ -10,11 +9,11 @@ import (
 
 type AppService interface {
 	Start() error
-	SetRepository(*repository.ApiService)
+	SetRepository(ApiService)
 }
 
 type appService struct {
-	repository *repository.ApiService
+	repository ApiService
 	cliApp     cli.App
 
 	exitCh chan struct{}
@@ -35,7 +34,7 @@ type appService struct {
 
 type CbCliStarted = func(url string)
 
-func New(repository *repository.ApiService, cb CbCliStarted) AppService {
+func New(repository ApiService, cb CbCliStarted) *appService {
 	return &appService{
 		cliStartedCb: cb,
 		repository:   repository,
@@ -57,7 +56,7 @@ func (s *appService) Start() error {
 	return s.cliApp.Run(os.Args)
 }
 
-func (s *appService) SetRepository(r *repository.ApiService) {
+func (s *appService) SetRepository(r ApiService) {
 	s.repository = r
 }
 
@@ -193,6 +192,55 @@ func (s *appService) getCommands() []*cli.Command {
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdTransmit)
+			},
+		},
+		{
+			Name:  models.CommandWrite,
+			Usage: "Write NDEF message to the tag",
+			Action: func(ctx *cli.Context) error {
+				return s.withWsConnect(ctx, s.cmdWrite)
+			},
+			Flags: []cli.Flag{
+				s.flagsMap[models.FlagHost],
+				s.flagsMap[models.FlagAdapter],
+				s.flagsMap[models.FlagRepeat],
+				s.flagsMap[models.FlagInput],
+				s.flagsMap[models.FlagOutput],
+				s.flagsMap[models.FlagAppend],
+				s.flagsMap[models.FlagTimeout],
+				s.flagsMap[models.FlagAuth],
+
+				s.flagsMap[models.FlagNdefType],
+				s.flagsMap[models.FlagProtect],
+
+				s.flagsMap[models.FlagNdefTypeRawId],
+				s.flagsMap[models.FlagNdefTypeRawTnf],
+				s.flagsMap[models.FlagNdefTypeType],
+				s.flagsMap[models.FlagNdefTypeRawPayload],
+				s.flagsMap[models.FlagNdefTypeUrl],
+				s.flagsMap[models.FlagNdefTypeText],
+				s.flagsMap[models.FlagNdefTypeLang],
+				s.flagsMap[models.FlagNdefUri],
+				s.flagsMap[models.FlagNdefTypeAarPackage],
+				s.flagsMap[models.FlagNdefTypePhone],
+				s.flagsMap[models.FlagNdefTypeVcardAddressCity],
+				s.flagsMap[models.FlagNdefTypeVcardAddressCountry],
+				s.flagsMap[models.FlagNdefTypeVcardAddressPostalCode],
+				s.flagsMap[models.FlagNdefTypeVcardAddressRegion],
+				s.flagsMap[models.FlagNdefTypeVcardAddressStreet],
+				s.flagsMap[models.FlagNdefTypeVcardEmail],
+				s.flagsMap[models.FlagNdefTypeVcardFirstName],
+				s.flagsMap[models.FlagNdefTypeVcardLastName],
+				s.flagsMap[models.FlagNdefTypeVcardOrganization],
+				s.flagsMap[models.FlagNdefTypeVcardPhoneCell],
+				s.flagsMap[models.FlagNdefTypeVcardPhoneHome],
+				s.flagsMap[models.FlagNdefTypeVcardPhoneWork],
+				s.flagsMap[models.FlagNdefTypeTitle],
+				s.flagsMap[models.FlagNdefTypeVcardSite],
+				s.flagsMap[models.FlagNdefTypeMimeFormat],
+				s.flagsMap[models.FlagNdefTypeMimeContent],
+				s.flagsMap[models.FlagNdefTypeGeoLat],
+				s.flagsMap[models.FlagNdefTypeGeoLon],
 			},
 		},
 	}

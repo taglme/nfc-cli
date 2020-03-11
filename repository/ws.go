@@ -21,7 +21,11 @@ func (s *ApiService) RunWsConnection(handler func(models.Event, interface{})) er
 }
 
 func (s *ApiService) StopWsConnection() error {
-	return s.client.Ws.Disconnect()
+	if s.client.Ws.IsConnected() {
+		return s.client.Ws.Disconnect()
+	}
+
+	return nil
 }
 
 func (s *ApiService) eventHandler(e apiModels.Event) {
