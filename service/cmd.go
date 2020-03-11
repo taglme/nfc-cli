@@ -41,7 +41,7 @@ func (s *appService) eventHandler(e models.Event, data interface{}) {
 	}
 }
 
-func (s *appService) cmdRead(*cli.Context) error {
+func (s *appService) cmdRead(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
 	if err != nil {
@@ -56,19 +56,31 @@ func (s *appService) cmdRead(*cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandRead,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 	)
+
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
+
 	return err
 }
 
-func (s *appService) cmdDump(*cli.Context) error {
+func (s *appService) cmdDump(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
 	if err != nil {
@@ -83,19 +95,28 @@ func (s *appService) cmdDump(*cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(
+	export := ctx.Bool(models.FlagExport)
+	var nj interface{}
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandDump,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 	return err
 }
 
-func (s *appService) cmdLock(*cli.Context) error {
+func (s *appService) cmdLock(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
 	if err != nil {
@@ -110,7 +131,10 @@ func (s *appService) cmdLock(*cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandLock,
 			AdapterId: adapters[s.adapter-1].AdapterID,
@@ -119,10 +143,16 @@ func (s *appService) cmdLock(*cli.Context) error {
 			Auth:      auth,
 		},
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 	return err
 }
 
-func (s *appService) cmdFormat(*cli.Context) error {
+func (s *appService) cmdFormat(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
 	if err != nil {
@@ -137,19 +167,29 @@ func (s *appService) cmdFormat(*cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandFormat,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 	return err
 }
 
-func (s *appService) cmdRmPwd(*cli.Context) error {
+func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
 	if err != nil {
@@ -164,15 +204,25 @@ func (s *appService) cmdRmPwd(*cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddGenericJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandRmpwd,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 	return err
 }
 
@@ -196,16 +246,26 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddSetPwdJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddSetPwdJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandSetpwd,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 		password,
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 	return err
 }
 
@@ -234,17 +294,27 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 		log.Println("Can't parse auth string")
 	}
 
-	_, err = s.repository.AddTransmitJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddTransmitJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandTransmit,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 		txBytes,
 		target,
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 	return err
 }
 
@@ -270,23 +340,44 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 
 	protect := ctx.Bool(models.FlagProtect)
 
-	_, err = s.repository.AddWriteJob(
+	export := ctx.Bool(models.FlagExport)
+
+	var nj interface{}
+	_, nj, err = s.repository.AddWriteJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandTransmit,
 			AdapterId: adapters[s.adapter-1].AdapterID,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			Export:    export,
 		},
 		payload,
 		protect,
 	)
+	if export && nj != nil {
+		err := s.writeToFile(s.output, nj)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file: ")
+		}
+	}
 
 	return err
 }
 
 func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) error) error {
 	s.cliStartedCb(s.host)
+
+	export := ctx.Bool(models.FlagExport)
+	if export {
+		err := cmdFunc(ctx)
+		if err != nil {
+			ctx.Done()
+			return err
+		}
+		return nil
+	}
+
 	err := s.repository.RunWsConnection(s.eventHandler)
 	if err != nil {
 		return errors.Wrap(err, "Can't establish the WS connection")

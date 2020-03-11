@@ -8,6 +8,7 @@ import (
 	"github.com/taglme/nfc-client/pkg/client"
 	apiModels "github.com/taglme/nfc-client/pkg/models"
 	"github.com/taglme/nfc-client/pkg/ndefconv"
+	"log"
 )
 
 type ApiService struct {
@@ -42,16 +43,35 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
-func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, auth []byte) (apiModels.Job, error) {
+func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte, export bool) (*apiModels.Job, *apiModels.NewJob, error) {
 	if auth != nil {
 		nj.Steps = append(nj.Steps, apiModels.JobStepResource{})
 		copy(nj.Steps[1:], nj.Steps)
 		nj.Steps[0] = *s.getAuthJobStep(auth)
 	}
 
-	j, err := s.client.Jobs.Add(adapterId, nj)
+	if export {
+		fmt.Println("New job has been exported:")
+		s.printer.PrintNewJob(*nj)
+		s.printer.Reset()
+
+		var steps []apiModels.JobStep
+		for _, sr := range nj.Steps {
+			s, err := sr.ToJobStep()
+			if err != nil {
+				log.Printf("Can't convert new job step resource to new job step: %s\n", err)
+				continue
+			}
+			steps = append(steps, s)
+		}
+		s.printer.PrintJobSteps(steps)
+		s.printer.Reset()
+		return nil, nj, nil
+	}
+
+	j, err := s.client.Jobs.Add(adapterId, *nj)
 	if err != nil {
-		return j, err
+		return &j, nj, err
 	}
 
 	fmt.Println("Job has been submitted:")
@@ -61,10 +81,10 @@ func (s *ApiService) addJob(nj apiModels.NewJob, adapterId string, auth []byte) 
 	s.printer.PrintJobSteps(j.Steps)
 	s.printer.Reset()
 
-	return j, err
+	return &j, nj, err
 }
 
-func (s *ApiService) AddGenericJob(p models.GenericJobParams) (apiModels.Job, error) {
+func (s *ApiService) AddGenericJob(p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error) {
 	nj := apiModels.NewJob{
 		JobName:     MapCliCmdToJobName[p.Cmd],
 		Repeat:      p.Repeat,
@@ -72,10 +92,10 @@ func (s *ApiService) AddGenericJob(p models.GenericJobParams) (apiModels.Job, er
 		Steps:       MapCliCmdToApiJobSteps[p.Cmd],
 	}
 
-	return s.addJob(nj, p.AdapterId, p.Auth)
+	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (apiModels.Job, error) {
+func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (*apiModels.Job, *apiModels.NewJob, error) {
 	jobStep := apiModels.JobStep{
 		Command: apiModels.CommandSetPassword,
 		Params: apiModels.SetPasswordParams{
@@ -92,10 +112,10 @@ func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (a
 		Steps:       []apiModels.JobStepResource{jobStepResource},
 	}
 
-	return s.addJob(nj, p.AdapterId, p.Auth)
+	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (apiModels.Job, error) {
+func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (*apiModels.Job, *apiModels.NewJob, error) {
 	var nj apiModels.NewJob
 	var jobStep apiModels.JobStep
 
@@ -123,10 +143,10 @@ func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, t
 	nj.ExpireAfter = p.Expire
 	nj.Steps = []apiModels.JobStepResource{jobStepResource}
 
-	return s.addJob(nj, p.AdapterId, p.Auth)
+	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *ApiService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (apiModels.Job, error) {
+func (s *ApiService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (*apiModels.Job, *apiModels.NewJob, error) {
 	var nj apiModels.NewJob
 
 	jobStep := apiModels.JobStep{
@@ -152,7 +172,7 @@ func (s *ApiService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, 
 		nj.Steps = append(nj.Steps, lockStep.ToResource())
 	}
 
-	return s.addJob(nj, p.AdapterId, p.Auth)
+	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
 var MapCliCmdToJobName = map[models.Command]string{

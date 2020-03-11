@@ -89,6 +89,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdRead)
@@ -105,6 +106,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdDump)
@@ -121,6 +123,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdLock)
@@ -137,6 +140,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdFormat)
@@ -153,6 +157,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdRmPwd)
@@ -169,6 +174,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 				s.flagsMap[models.FlagPwd],
 			},
 			Action: func(ctx *cli.Context) error {
@@ -182,11 +188,11 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagHost],
 				s.flagsMap[models.FlagAdapter],
 				s.flagsMap[models.FlagRepeat],
-				s.flagsMap[models.FlagInput],
 				s.flagsMap[models.FlagOutput],
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 				s.flagsMap[models.FlagTarget],
 				s.flagsMap[models.FlagTxBytes],
 			},
@@ -204,11 +210,11 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagHost],
 				s.flagsMap[models.FlagAdapter],
 				s.flagsMap[models.FlagRepeat],
-				s.flagsMap[models.FlagInput],
 				s.flagsMap[models.FlagOutput],
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
+				s.flagsMap[models.FlagExport],
 
 				s.flagsMap[models.FlagNdefType],
 				s.flagsMap[models.FlagProtect],
@@ -243,5 +249,20 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagNdefTypeGeoLon],
 			},
 		},
+		//{
+		//	Name:  models.CommandRun,
+		//	Usage: "Load jobs from file and send them to server",
+		//	Action: func(ctx *cli.Context) error {
+		//		return s.withWsConnect(ctx, s.cmdRun)
+		//	},
+		//	Flags: []cli.Flag{
+		//		s.flagsMap[models.FlagHost],
+		//		s.flagsMap[models.FlagAdapter],
+		//		s.flagsMap[models.FlagOutput],
+		//		s.flagsMap[models.FlagAppend],
+		//		s.flagsMap[models.FlagTimeout],
+		//		s.flagsMap[models.FlagFile],
+		//	},
+		//},
 	}
 }

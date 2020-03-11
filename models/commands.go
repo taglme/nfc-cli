@@ -13,4 +13,5 @@ const (
 	CommandSetpwd   Command = "setpwd"
 	CommandRmpwd    Command = "rmpwd"
 	CommandFormat   Command = "format"
+	CommandRun      Command = "run"
 )

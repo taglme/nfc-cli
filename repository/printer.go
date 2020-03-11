@@ -11,6 +11,7 @@ type PrinterService interface {
 	PrintAppInfo(apiModels.AppInfo)
 	PrintAdapters([]apiModels.Adapter)
 	PrintJob(apiModels.Job)
+	PrintNewJob(apiModels.NewJob)
 	PrintJobSteps([]apiModels.JobStep)
 	PrintTag(apiModels.Tag)
 	PrintStepResults([]apiModels.StepResult)
@@ -76,6 +77,22 @@ func (s *printerService) PrintAdapters(adapters []apiModels.Adapter) {
 		s.writer.AppendRow(table.Row{a.AdapterID, a.Name, a.Type.String(), a.Driver})
 	}
 	s.writer.SetStyle(table.StyleLight)
+	s.writer.Render()
+}
+
+func (s *printerService) PrintNewJob(job apiModels.NewJob) {
+	s.writer.AppendHeader(table.Row{
+		"Job Name",
+		"Repeat",
+		"ExpireAfter",
+	})
+
+	s.writer.AppendRow(table.Row{
+		job.JobName,
+		job.Repeat,
+		job.ExpireAfter,
+	})
+
 	s.writer.Render()
 }
 

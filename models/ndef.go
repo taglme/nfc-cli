@@ -17,7 +17,7 @@ const (
 	NdefTypePoster NdefType = "poster"
 )
 
-type NdefPayload interface {}
+type NdefPayload interface{}
 
 type NdefRecordPayloadRaw struct {
 	Tnf     int

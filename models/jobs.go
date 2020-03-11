@@ -6,4 +6,5 @@ type GenericJobParams struct {
 	Repeat    int
 	Expire    int
 	Auth      []byte
+	Export    bool
 }
