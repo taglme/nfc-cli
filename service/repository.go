@@ -13,7 +13,7 @@ type ApiService interface {
 	AddSetPwdJob(p models.GenericJobParams, password []byte) (*apiModels.Job, *apiModels.NewJob, error)
 	AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (*apiModels.Job, *apiModels.NewJob, error)
 	AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (*apiModels.Job, *apiModels.NewJob, error)
-	AddJobFromFile(adapterId string, filename string, timeout int) (*apiModels.Job, *apiModels.NewJob, error)
+	AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error)
 	RunWsConnection(handler func(models.Event, interface{})) error
 	StopWsConnection() error
 }

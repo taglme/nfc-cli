@@ -28,6 +28,7 @@ type appService struct {
 	timeout int
 	input   string
 	auth    string
+	jobName string
 
 	cliStartedCb CbCliStarted
 }
@@ -90,6 +91,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdRead)
@@ -107,6 +109,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdDump)
@@ -124,6 +127,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdLock)
@@ -141,6 +145,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdFormat)
@@ -158,6 +163,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 			},
 			Action: func(ctx *cli.Context) error {
 				return s.withWsConnect(ctx, s.cmdRmPwd)
@@ -175,6 +181,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 				s.flagsMap[models.FlagPwd],
 			},
 			Action: func(ctx *cli.Context) error {
@@ -193,6 +200,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 				s.flagsMap[models.FlagTarget],
 				s.flagsMap[models.FlagTxBytes],
 			},
@@ -215,6 +223,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagAuth],
 				s.flagsMap[models.FlagExport],
+				s.flagsMap[models.FlagJobName],
 
 				s.flagsMap[models.FlagNdefType],
 				s.flagsMap[models.FlagProtect],
@@ -262,6 +271,7 @@ func (s *appService) getCommands() []*cli.Command {
 				s.flagsMap[models.FlagAppend],
 				s.flagsMap[models.FlagTimeout],
 				s.flagsMap[models.FlagFile],
+				s.flagsMap[models.FlagJobName],
 			},
 		},
 	}

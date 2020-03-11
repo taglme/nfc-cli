@@ -7,4 +7,5 @@ type GenericJobParams struct {
 	Expire    int
 	Auth      []byte
 	Export    bool
+	JobName   string
 }

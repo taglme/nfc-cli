@@ -67,6 +67,7 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 	)
 
@@ -105,6 +106,7 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 	)
 	if export && nj != nil {
@@ -141,6 +143,7 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
+			JobName: s.jobName,
 		},
 	)
 	if export && nj != nil {
@@ -178,6 +181,7 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 	)
 	if export && nj != nil {
@@ -215,6 +219,7 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 	)
 	if export && nj != nil {
@@ -257,6 +262,7 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 		password,
 	)
@@ -305,6 +311,7 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 		txBytes,
 		target,
@@ -351,6 +358,7 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
+			JobName: s.jobName,
 		},
 		payload,
 		protect,
@@ -377,7 +385,7 @@ func (s *appService) cmdRun(ctx *cli.Context) error {
 
 	file := ctx.String(models.FlagFile)
 
-	_, _, err = s.repository.AddJobFromFile(adapters[s.adapter-1].AdapterID, file, s.timeout)
+	_, _, err = s.repository.AddJobFromFile(adapters[s.adapter-1].AdapterID, file, models.GenericJobParams{Expire: s.timeout, JobName: s.jobName})
 
 	return err
 }

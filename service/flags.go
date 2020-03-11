@@ -70,8 +70,9 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 			Destination: &s.auth,
 		},
 		models.FlagJobName: &cli.StringFlag{
-			Name:  models.FlagJobName,
-			Usage: "Task name of the created task. Optional. If absent, then name created in accordance with the command used.",
+			Name:        models.FlagJobName,
+			Usage:       "Task name of the created task. Optional. If absent, then name created in accordance with the command used.",
+			Destination: &s.jobName,
 		},
 		models.FlagExport: &cli.BoolFlag{
 			Name:  models.FlagExport,

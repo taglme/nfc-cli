@@ -43,13 +43,19 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
-func (s *ApiService) AddJobFromFile(adapterId string, filename string, timeout int) (*apiModels.Job, *apiModels.NewJob, error) {
+func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error) {
 	newJob, err := s.readFromFile(filename)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	newJob.ExpireAfter = timeout
+	if p.Expire != 60 {
+		newJob.ExpireAfter = p.Expire
+	}
+
+	if len(p.JobName) > 0 {
+		newJob.JobName = p.JobName
+	}
 
 	j, err := s.client.Jobs.Add(adapterId, *newJob)
 	if err != nil {
@@ -115,6 +121,10 @@ func (s *ApiService) AddGenericJob(p models.GenericJobParams) (*apiModels.Job, *
 		Steps:       MapCliCmdToApiJobSteps[p.Cmd],
 	}
 
+	if len(p.JobName) > 0 {
+		nj.JobName = p.JobName
+	}
+
 	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
@@ -133,6 +143,10 @@ func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (*
 		Repeat:      p.Repeat,
 		ExpireAfter: p.Expire,
 		Steps:       []apiModels.JobStepResource{jobStepResource},
+	}
+
+	if len(p.JobName) > 0 {
+		nj.JobName = p.JobName
 	}
 
 	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
@@ -160,6 +174,10 @@ func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, t
 		}
 	}
 
+	if len(p.JobName) > 0 {
+		nj.JobName = p.JobName
+	}
+
 	jobStepResource := jobStep.ToResource()
 
 	nj.Repeat = p.Repeat
@@ -182,6 +200,9 @@ func (s *ApiService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, 
 	}
 
 	nj.JobName = "Write tag"
+	if len(p.JobName) > 0 {
+		nj.JobName = p.JobName
+	}
 	nj.Repeat = p.Repeat
 	nj.ExpireAfter = p.Expire
 	nj.Steps = []apiModels.JobStepResource{jobStep.ToResource()}
