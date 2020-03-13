@@ -28,8 +28,7 @@ func (s *ApiService) GetVersion() (apiModels.AppInfo, error) {
 	if err != nil {
 		return i, err
 	}
-	s.printer.PrintAppInfo(i)
-	s.printer.Reset()
+	fmt.Printf("Server version: %s\n", i.Version)
 	return i, err
 }
 

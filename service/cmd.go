@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/urfave/cli/v2"
@@ -8,6 +9,7 @@ import (
 
 func (s *appService) cmdVersion(*cli.Context) error {
 	s.cliStartedCb(s.host)
+	fmt.Printf("CLI version: %s\n", s.cliApp.Version)
 	_, err := s.repository.GetVersion()
 
 	return err
