@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"encoding/json"
 	"github.com/jedib0t/go-pretty/table"
 	apiModels "github.com/taglme/nfc-goclient/pkg/models"
+	"log"
 	"os"
 )
 
@@ -178,10 +180,15 @@ func (s *printerService) PrintStepResults(r []apiModels.StepResult) {
 	})
 
 	for _, sr := range r {
+		o, err := json.MarshalIndent(sr.Output.ToResource(), "", "  ")
+		if err != nil {
+			log.Printf("Can't marshall run step output: %s\n", err)
+		}
+
 		s.writer.AppendRow(table.Row{
 			sr.Command.String(),
 			sr.Params,
-			sr.Output,
+			string(o),
 			sr.Status.String(),
 			sr.Message,
 		})

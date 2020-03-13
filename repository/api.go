@@ -43,33 +43,39 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
-func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error) {
-	newJob, err := s.readFromFile(filename)
+func (s *ApiService) DeleteAdapterJobs(adapterId string) error {
+	return s.client.Jobs.DeleteAll(adapterId)
+}
+
+func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (int, error) {
+	newJobs, err := s.readFromFile(filename)
 	if err != nil {
-		return nil, nil, err
+		return 0, err
 	}
 
-	if p.Expire != 60 {
-		newJob.ExpireAfter = p.Expire
+	for _, newJob := range newJobs {
+		if p.Expire != 60 {
+			newJob.ExpireAfter = p.Expire
+		}
+
+		if len(p.JobName) > 0 {
+			newJob.JobName = p.JobName
+		}
+
+		j, err := s.client.Jobs.Add(adapterId, newJob)
+		if err != nil {
+			return len(newJobs), err
+		}
+
+		fmt.Println("Job has been submitted:")
+		s.printer.PrintJob(j)
+		s.printer.Reset()
+		fmt.Println("\nJob steps:")
+		s.printer.PrintJobSteps(j.Steps)
+		s.printer.Reset()
 	}
 
-	if len(p.JobName) > 0 {
-		newJob.JobName = p.JobName
-	}
-
-	j, err := s.client.Jobs.Add(adapterId, *newJob)
-	if err != nil {
-		return &j, newJob, err
-	}
-
-	fmt.Println("Job has been submitted:")
-	s.printer.PrintJob(j)
-	s.printer.Reset()
-	fmt.Println("\nJob steps:")
-	s.printer.PrintJobSteps(j.Steps)
-	s.printer.Reset()
-
-	return &j, newJob, err
+	return len(newJobs), err
 }
 
 func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte, export bool) (*apiModels.Job, *apiModels.NewJob, error) {

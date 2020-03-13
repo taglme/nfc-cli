@@ -16,7 +16,8 @@ type appService struct {
 	repository ApiService
 	cliApp     cli.App
 
-	exitCh chan struct{}
+	exitCh    chan struct{}
+	adapterId string
 
 	flagsMap map[string]cli.Flag
 	//  below is arguments controlled by ./flags.go
@@ -31,6 +32,10 @@ type appService struct {
 	jobName string
 
 	cliStartedCb CbCliStarted
+	ongoingJobs  struct {
+		published int
+		left      int
+	}
 }
 
 type CbCliStarted = func(url string)

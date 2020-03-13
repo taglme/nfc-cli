@@ -132,6 +132,7 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 		},
 		models.FlagNdefTypeLang: &cli.StringFlag{
 			Name:  models.FlagNdefTypeLang,
+			Value: "English",
 			Usage: "NDEF text type lang field",
 		},
 		models.FlagNdefUri: &cli.StringFlag{

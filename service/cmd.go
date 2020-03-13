@@ -1,15 +1,9 @@
 package service
 
 import (
-	"context"
-	"fmt"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/urfave/cli/v2"
-	"log"
-	"os"
-	"os/signal"
-	"time"
 )
 
 func (s *appService) cmdVersion(*cli.Context) error {
@@ -26,34 +20,10 @@ func (s *appService) cmdAdapters(*cli.Context) error {
 	return err
 }
 
-func (s *appService) eventHandler(e models.Event, data interface{}) {
-	s.cliStartedCb(s.host)
-
-	if e == models.EventJobFinished && len(s.output) > 0 {
-		err := s.writeToFile(s.output, data)
-		if err != nil {
-			log.Println("Can't write to the file: ", err)
-		}
-	}
-
-	if e == models.EventJobFinished || e == models.EventJobDeleted {
-		s.exitCh <- struct{}{}
-	}
-}
-
 func (s *appService) cmdRead(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -62,14 +32,17 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandRead,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -82,33 +55,28 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdDump(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
-
 	export := ctx.Bool(models.FlagExport)
+
 	var nj interface{}
 	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandDump,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -119,33 +87,27 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdLock(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	export := ctx.Bool(models.FlagExport)
-
 	var nj interface{}
 	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandLock,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -156,34 +118,28 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdFormat(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	export := ctx.Bool(models.FlagExport)
-
 	var nj interface{}
 	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandFormat,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -194,34 +150,28 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdRmPwd(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	export := ctx.Bool(models.FlagExport)
-
 	var nj interface{}
 	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandRmpwd,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -232,15 +182,6 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdSetPwd(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	password, err := s.parseHexString(ctx.String(models.FlagPwd))
 	if err != nil {
 		return errors.Wrap(err, "Can't parse password arg: ")
@@ -248,24 +189,27 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	export := ctx.Bool(models.FlagExport)
-
 	var nj interface{}
 	_, nj, err = s.repository.AddSetPwdJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandSetpwd,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 		password,
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -276,15 +220,6 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdTransmit(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	target := ctx.String(models.FlagTarget)
 	if target != "tag" && target != "adapter" {
 		return errors.New("Wrong target flag value. Can be either \"tag\" or \"adapter\".")
@@ -292,12 +227,12 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 
 	txBytes, err := s.parseHexString(ctx.String(models.FlagTxBytes))
 	if err != nil {
-		return errors.Wrap(err, "Can't parse password arg: ")
+		return errors.Wrap(err, "Can't parse tx bytes string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -306,16 +241,20 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	_, nj, err = s.repository.AddTransmitJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandTransmit,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 		txBytes,
 		target,
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -326,18 +265,9 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdWrite(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		log.Println("Can't parse auth string")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
 	}
 
 	payload, err := s.parseNdefPayloadFlags(ctx)
@@ -346,23 +276,26 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	}
 
 	protect := ctx.Bool(models.FlagProtect)
-
 	export := ctx.Bool(models.FlagExport)
 
 	var nj interface{}
 	_, nj, err = s.repository.AddWriteJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandTransmit,
-			AdapterId: adapters[s.adapter-1].AdapterID,
+			AdapterId: s.adapterId,
 			Repeat:    s.repeat,
 			Expire:    s.timeout,
 			Auth:      auth,
 			Export:    export,
-			JobName: s.jobName,
+			JobName:   s.jobName,
 		},
 		payload,
 		protect,
 	)
+
+	s.ongoingJobs.published = 1
+	s.ongoingJobs.left = 1
+
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
@@ -374,77 +307,11 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdRun(ctx *cli.Context) error {
-	fmt.Println("Available adapters:")
-	adapters, err := s.repository.GetAdapters()
-	if err != nil {
-		return err
-	}
-	if s.adapter <= 0 || s.adapter > len(adapters) {
-		return errors.New("Can't find adapter with such index")
-	}
-
 	file := ctx.String(models.FlagFile)
+	jobsPublished, err := s.repository.AddJobFromFile(s.adapterId, file, models.GenericJobParams{Expire: s.timeout, JobName: s.jobName})
 
-	_, _, err = s.repository.AddJobFromFile(adapters[s.adapter-1].AdapterID, file, models.GenericJobParams{Expire: s.timeout, JobName: s.jobName})
-
-	return err
-}
-
-func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) error) error {
-	s.cliStartedCb(s.host)
-
-	export := ctx.Bool(models.FlagExport)
-	if export {
-		err := cmdFunc(ctx)
-		if err != nil {
-			ctx.Done()
-			return err
-		}
-		return nil
-	}
-
-	err := s.repository.RunWsConnection(s.eventHandler)
-	if err != nil {
-		return errors.Wrap(err, "Can't establish the WS connection")
-	}
-	defer func() {
-		err = s.repository.StopWsConnection()
-		if err != nil {
-			log.Printf("Error on WS connection close: %s", err)
-		}
-	}()
-
-	err = cmdFunc(ctx)
-	if err != nil {
-		ctx.Done()
-		return err
-	}
-
-	c1, cancel := context.WithCancel(context.Background())
-	s.exitCh = make(chan struct{})
-	go func(ctx context.Context) {
-		fmt.Println("Waiting for Job deleted event. Press ^C to stop.")
-		for {
-			select {
-			case <-ctx.Done():
-				fmt.Println("\nReceived done, exiting...")
-				s.exitCh <- struct{}{}
-				return
-			default:
-				time.Sleep(50 * time.Millisecond)
-			}
-		}
-	}(c1)
-
-	signalCh := make(chan os.Signal, 1)
-	signal.Notify(signalCh, os.Interrupt)
-	go func() {
-		for range signalCh {
-			cancel()
-			return
-		}
-	}()
-	<-s.exitCh
+	s.ongoingJobs.published = jobsPublished
+	s.ongoingJobs.left = jobsPublished
 
 	return err
 }

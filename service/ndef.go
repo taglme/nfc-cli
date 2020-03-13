@@ -76,10 +76,22 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		city := ctx.String(models.FlagNdefTypeVcardAddressCity)
 		country := ctx.String(models.FlagNdefTypeVcardAddressCountry)
 		postal := ctx.String(models.FlagNdefTypeVcardAddressPostalCode)
+		if len(postal) == 0 || !regexp.MustCompile(`^\d+$`).MatchString(postal) {
+			return nil, errors.New("Flag postal can't be empty and should contain only digits")
+		}
+
 		reg := ctx.String(models.FlagNdefTypeVcardAddressRegion)
 		street := ctx.String(models.FlagNdefTypeVcardAddressStreet)
 		email := ctx.String(models.FlagNdefTypeVcardEmail)
+		if len(email) == 0 || !validateEmail(email) {
+			return nil, errors.New("Flag email can't be empty and should contain valid email")
+		}
+
 		fName := ctx.String(models.FlagNdefTypeVcardFirstName)
+		if len(fName) == 0 {
+			return nil, errors.New("Flag first-name can't be empty")
+		}
+
 		lName := ctx.String(models.FlagNdefTypeVcardLastName)
 		org := ctx.String(models.FlagNdefTypeVcardOrganization)
 		cell := ctx.String(models.FlagNdefTypeVcardPhoneCell)
@@ -199,4 +211,9 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 	}
 
 	return nil, errors.New("There's no Ndef Record Payload struct for such Ndef Type")
+}
+
+func validateEmail(email string) bool {
+	Re := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	return Re.MatchString(email)
 }
