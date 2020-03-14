@@ -137,9 +137,14 @@ func (s *printerService) PrintJobSteps(js []apiModels.JobStep) {
 	})
 
 	for _, step := range js {
+		p, err := json.MarshalIndent(step.Params.ToResource(), "", "  ")
+		if err != nil {
+			log.Printf("Can't marshall job step params: %s\n", err)
+		}
+
 		s.writer.AppendRow(table.Row{
 			step.Command,
-			step.Params,
+			string(p),
 		})
 	}
 
@@ -180,6 +185,11 @@ func (s *printerService) PrintStepResults(r []apiModels.StepResult) {
 	})
 
 	for _, sr := range r {
+		p, err := json.MarshalIndent(sr.Params.ToResource(), "", "  ")
+		if err != nil {
+			log.Printf("Can't marshall run step params: %s\n", err)
+		}
+
 		o, err := json.MarshalIndent(sr.Output.ToResource(), "", "  ")
 		if err != nil {
 			log.Printf("Can't marshall run step output: %s\n", err)
@@ -187,7 +197,7 @@ func (s *printerService) PrintStepResults(r []apiModels.StepResult) {
 
 		s.writer.AppendRow(table.Row{
 			sr.Command.String(),
-			sr.Params,
+			string(p),
 			string(o),
 			sr.Status.String(),
 			sr.Message,

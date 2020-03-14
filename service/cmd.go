@@ -25,7 +25,7 @@ func (s *appService) cmdAdapters(*cli.Context) error {
 func (s *appService) cmdRead(ctx *cli.Context) error {
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -49,7 +49,7 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 
@@ -59,7 +59,7 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 func (s *appService) cmdDump(ctx *cli.Context) error {
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 	export := ctx.Bool(models.FlagExport)
 
@@ -82,7 +82,7 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 	return err
@@ -91,7 +91,7 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 func (s *appService) cmdLock(ctx *cli.Context) error {
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -113,7 +113,7 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 	return err
@@ -122,7 +122,7 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 func (s *appService) cmdFormat(ctx *cli.Context) error {
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -145,7 +145,7 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 	return err
@@ -154,7 +154,7 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -177,7 +177,7 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 	return err
@@ -186,12 +186,12 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 	password, err := s.parseHexString(ctx.String(models.FlagPwd))
 	if err != nil {
-		return errors.Wrap(err, "Can't parse password arg: ")
+		return errors.Wrap(err, "Can't parse password arg")
 	}
 
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -215,7 +215,7 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 	return err
@@ -229,12 +229,12 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 
 	txBytes, err := s.parseHexString(ctx.String(models.FlagTxBytes))
 	if err != nil {
-		return errors.Wrap(err, "Can't parse tx bytes string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse tx bytes string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	export := ctx.Bool(models.FlagExport)
@@ -260,7 +260,7 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 	return err
@@ -269,7 +269,7 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 func (s *appService) cmdWrite(ctx *cli.Context) error {
 	auth, err := s.parseHexString(s.auth)
 	if err != nil {
-		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\": ")
+		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
 	payload, err := s.parseNdefPayloadFlags(ctx)
@@ -301,7 +301,7 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
 		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file: ")
+			return errors.Wrapf(err, "Can't write to the file")
 		}
 	}
 

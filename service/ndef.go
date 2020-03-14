@@ -23,16 +23,20 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 
 		t := ctx.String(models.FlagNdefTypeType)
 		id := ctx.String(models.FlagNdefTypeRawId)
-		payload, err := s.parseHexString(ctx.String(models.FlagNdefTypeRawPayload))
+		payload := ctx.String(models.FlagNdefTypeRawPayload)
+		if len(payload) < 1 {
+			return nil, errors.New("Payload value can't be empty")
+		}
+		p, err := s.parseHexString(payload)
 		if err != nil {
-			return nil, errors.Wrap(err, "Can't parse payload: ")
+			return nil, errors.Wrap(err, "Can't parse payload. It should be HEX string i.e. \"03 AD F3 41\"")
 		}
 
 		return ndef.NdefRecordPayloadRaw{
 			Tnf:     tnf,
 			Type:    t,
 			ID:      id,
-			Payload: payload,
+			Payload: p,
 		}, nil
 	case models.NdefTypeUrl:
 		url := ctx.String(models.FlagNdefTypeUrl)
@@ -133,8 +137,8 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		res.Format = mimeFormat
 
 		content := ctx.String(models.FlagNdefTypeMimeContent)
-		if len(t) < 1 {
-			return nil, errors.New("content value can't be empty")
+		if len(content) < 1 {
+			return nil, errors.New("Content value can't be empty")
 		}
 
 		if mimeFormat == models.MimeFormatASCII {
@@ -144,7 +148,7 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 
 		c, err := s.parseHexString(content)
 		if err != nil {
-			return nil, errors.Wrap(err, "Can't parse content: ")
+			return nil, errors.Wrap(err, "Can't parse content string. It should be HEX string i.e. \"03 AD F3 41\"")
 		}
 
 		res.ContentHEX = c
@@ -161,9 +165,13 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		}, nil
 	case models.NdefTypeGeo:
 		lat := ctx.String(models.FlagNdefTypeGeoLat)
+		if len(lat) < 1 {
+			return nil, errors.New("Latitude value can't be empty")
+		}
+		lat = strings.Replace(lat, ",", ".", -1)
 		latF, err := strconv.ParseFloat(lat, 16)
 		if err != nil {
-			return nil, errors.Wrap(err, "Error on parsing float from latitude string: ")
+			return nil, errors.Wrap(err, "Error on parsing float from latitude string")
 		}
 
 		if latF < -90 || latF > 90 {
@@ -171,9 +179,13 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		}
 
 		lon := ctx.String(models.FlagNdefTypeGeoLon)
+		if len(lon) < 1 {
+			return nil, errors.New("Longitude value can't be empty")
+		}
+		lon = strings.Replace(lon, ",", ".", -1)
 		lonF, err := strconv.ParseFloat(lon, 16)
 		if err != nil {
-			return nil, errors.Wrap(err, "Error on parsing float from longtitude string: ")
+			return nil, errors.Wrap(err, "Error on parsing float from longitude string")
 		}
 
 		if lonF < -180 || lonF > 180 {
@@ -181,8 +193,8 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		}
 
 		return ndef.NdefRecordPayloadGeo{
-			Latitude:  strings.Replace(lat, ",", ".", -1),
-			Longitude: strings.Replace(lon, ",", ".", -1),
+			Latitude:  lat,
+			Longitude: lon,
 		}, nil
 	case models.NdefTypeAar:
 		p := ctx.String(models.FlagNdefTypeAarPackage)
@@ -210,7 +222,7 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		}, nil
 	}
 
-	return nil, errors.New("There's no Ndef Record Payload struct for such Ndef Type")
+	return nil, errors.New(fmt.Sprintf("There's no Ndef Record Payload struct for such Ndef Type. Choose one from available: %v", models.NdefTypeValues))
 }
 
 func validateEmail(email string) bool {

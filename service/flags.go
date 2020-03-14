@@ -111,6 +111,7 @@ func (s *appService) getFlagsMap() map[string]cli.Flag {
 		},
 		models.FlagNdefTypeRawTnf: &cli.IntFlag{
 			Name:  models.FlagNdefTypeRawTnf,
+			Value: -1,
 			Usage: "NDEF raw type tnf field",
 		},
 		models.FlagNdefTypeType: &cli.StringFlag{

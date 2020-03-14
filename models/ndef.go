@@ -17,6 +17,19 @@ const (
 	NdefTypePoster NdefType = "poster"
 )
 
+var NdefTypeValues = []NdefType{
+	NdefTypeRaw,
+	NdefTypeUrl,
+	NdefTypeText,
+	NdefTypeUri,
+	NdefTypeVcard,
+	NdefTypeMime,
+	NdefTypePhone,
+	NdefTypeGeo,
+	NdefTypeAar,
+	NdefTypePoster,
+}
+
 type NdefPayload interface{}
 
 type NdefRecordPayloadRaw struct {
