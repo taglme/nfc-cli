@@ -437,7 +437,7 @@ func parseOutputByCmd(command apiModels.Command, data map[string]interface{}) ap
 				res.Ndef.ReadOnly = r
 			}
 
-			if m, ok := data["message"].([]interface{}); ok {
+			if m, ok := ndef["message"].([]interface{}); ok {
 				res.Ndef.Message = make([]ndefconv.NdefRecord, len(m))
 				for i, msg := range m {
 					md := msg.(map[string]interface{})
