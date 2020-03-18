@@ -17,7 +17,6 @@ type PrinterService interface {
 	PrintNewJob(apiModels.NewJob)
 	PrintJobSteps([]apiModels.JobStep)
 	PrintTag(apiModels.Tag)
-	PrintStepResults([]apiModels.StepResult)
 	PrintJobRun(apiModels.JobRun)
 }
 
@@ -164,38 +163,6 @@ func (s *printerService) PrintJobRun(j apiModels.JobRun) {
 		j.AdapterName,
 		j.CreatedAt.String(),
 	})
-
-	s.writer.Render()
-}
-
-func (s *printerService) PrintStepResults(r []apiModels.StepResult) {
-	s.writer.AppendHeader(table.Row{
-		"Command",
-		"Params",
-		"Output",
-		"Status",
-		"Message",
-	})
-
-	for _, sr := range r {
-		p, err := json.MarshalIndent(sr.Params.ToResource(), "", "  ")
-		if err != nil {
-			log.Printf("Can't marshall run step params: %s\n", err)
-		}
-
-		o, err := json.MarshalIndent(sr.Output.ToResource(), "", "  ")
-		if err != nil {
-			log.Printf("Can't marshall run step output: %s\n", err)
-		}
-
-		s.writer.AppendRow(table.Row{
-			sr.Command.String(),
-			string(p),
-			string(o),
-			sr.Status.String(),
-			sr.Message,
-		})
-	}
 
 	s.writer.Render()
 }

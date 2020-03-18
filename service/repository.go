@@ -9,6 +9,7 @@ import (
 type ApiService interface {
 	GetVersion() (apiModels.AppInfo, error)
 	GetAdapters() ([]apiModels.Adapter, error)
+	GetJob(adapterId, id string) (apiModels.Job, error)
 	DeleteAdapterJobs(adapterId string) error
 	AddGenericJob(p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error)
 	AddSetPwdJob(p models.GenericJobParams, password []byte) (*apiModels.Job, *apiModels.NewJob, error)

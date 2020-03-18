@@ -45,7 +45,6 @@ func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) 
 	c1, cancel := context.WithCancel(context.Background())
 	s.exitCh = make(chan struct{})
 	go func(ctx context.Context) {
-		fmt.Println("Waiting for Job deleted event. Press ^C to stop.")
 		for {
 			select {
 			case <-ctx.Done():
@@ -92,7 +91,7 @@ func (s *appService) withAdapter(ctx *cli.Context, cmdFunc func(*cli.Context) er
 	if err != nil {
 		return errors.Wrap(err, "Can't delete adapter jobs: ")
 	}
-	log.Println("Adapter jobs where deleted")
+	fmt.Println("Adapter jobs were deleted")
 
 	return cmdFunc(ctx)
 }

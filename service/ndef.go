@@ -80,15 +80,23 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		city := ctx.String(models.FlagNdefTypeVcardAddressCity)
 		country := ctx.String(models.FlagNdefTypeVcardAddressCountry)
 		postal := ctx.String(models.FlagNdefTypeVcardAddressPostalCode)
-		if len(postal) == 0 || !regexp.MustCompile(`^\d+$`).MatchString(postal) {
-			return nil, errors.New("Flag postal can't be empty and should contain only digits")
+		if  len(postal) == 0 {
+			return nil, errors.New("Flag address-postal-code can't be empty")
+		}
+
+		if !regexp.MustCompile(`^\d+$`).MatchString(postal) {
+			return nil, errors.New("Flag address-postal-code should contain only digits")
 		}
 
 		reg := ctx.String(models.FlagNdefTypeVcardAddressRegion)
 		street := ctx.String(models.FlagNdefTypeVcardAddressStreet)
 		email := ctx.String(models.FlagNdefTypeVcardEmail)
-		if len(email) == 0 || !validateEmail(email) {
-			return nil, errors.New("Flag email can't be empty and should contain valid email")
+		if len(email) == 0 {
+			return nil, errors.New("Flag email can't be empty")
+		}
+
+		if !validateEmail(email) {
+			return nil, errors.New("Flag email should contain valid email")
 		}
 
 		fName := ctx.String(models.FlagNdefTypeVcardFirstName)

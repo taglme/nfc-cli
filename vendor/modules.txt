@@ -25,7 +25,7 @@ github.com/pkg/errors
 github.com/russross/blackfriday/v2
 # github.com/shurcooL/sanitized_anchor_name v1.0.0
 github.com/shurcooL/sanitized_anchor_name
-# github.com/taglme/nfc-goclient v1.0.0
+# github.com/taglme/nfc-goclient v1.1.0
 github.com/taglme/nfc-goclient/pkg/client
 github.com/taglme/nfc-goclient/pkg/models
 github.com/taglme/nfc-goclient/pkg/ndefconv

@@ -110,7 +110,6 @@ func parseTagStruct(data interface{}) (t apiModels.Tag) {
 
 func parseStepResultStruct(data interface{}) (sr apiModels.StepResult) {
 	r := data.(map[string]interface{})
-
 	if msg, ok := r["message"].(string); ok {
 		sr.Message = msg
 	}

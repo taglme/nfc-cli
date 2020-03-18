@@ -2,13 +2,11 @@ package repository
 
 import (
 	"encoding/base64"
-	"fmt"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-cli/ndef"
 	"github.com/taglme/nfc-goclient/pkg/client"
 	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 	"github.com/taglme/nfc-goclient/pkg/ndefconv"
-	"log"
 )
 
 type ApiService struct {
@@ -43,6 +41,10 @@ func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
 	return a, err
 }
 
+func (s *ApiService) GetJob(adapterId, id string) (apiModels.Job, error) {
+	return s.client.Jobs.Get(adapterId, id)
+}
+
 func (s *ApiService) DeleteAdapterJobs(adapterId string) error {
 	return s.client.Jobs.DeleteAll(adapterId)
 }
@@ -62,17 +64,10 @@ func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.
 			newJob.JobName = p.JobName
 		}
 
-		j, err := s.client.Jobs.Add(adapterId, newJob)
+		_, err := s.client.Jobs.Add(adapterId, newJob)
 		if err != nil {
 			return len(newJobs), err
 		}
-
-		fmt.Println("Job has been submitted:")
-		s.printer.PrintJob(j)
-		s.printer.Reset()
-		fmt.Println("\nJob steps:")
-		s.printer.PrintJobSteps(j.Steps)
-		s.printer.Reset()
 	}
 
 	return len(newJobs), err
@@ -86,21 +81,6 @@ func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte,
 	}
 
 	if export {
-		fmt.Println("New job has been exported:")
-		s.printer.PrintNewJob(*nj)
-		s.printer.Reset()
-
-		var steps []apiModels.JobStep
-		for _, sr := range nj.Steps {
-			s, err := sr.ToJobStep()
-			if err != nil {
-				log.Printf("Can't convert new job step resource to new job step: %s\n", err)
-				continue
-			}
-			steps = append(steps, s)
-		}
-		s.printer.PrintJobSteps(steps)
-		s.printer.Reset()
 		return nil, nj, nil
 	}
 
@@ -108,14 +88,6 @@ func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte,
 	if err != nil {
 		return &j, nj, err
 	}
-
-	fmt.Println("Job has been submitted:")
-	s.printer.PrintJob(j)
-	s.printer.Reset()
-	fmt.Println("\nJob steps:")
-	s.printer.PrintJobSteps(j.Steps)
-	s.printer.Reset()
-
 	return &j, nj, err
 }
 

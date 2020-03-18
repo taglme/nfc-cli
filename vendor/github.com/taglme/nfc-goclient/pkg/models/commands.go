@@ -3,12 +3,14 @@ package models
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 
 	"github.com/taglme/nfc-goclient/pkg/ndefconv"
 )
 
 type CommandParams interface {
 	ToResource() CommandParamsResource
+	String() string
 }
 type CommandParamsResource interface {
 	ToParams() (CommandParams, error)
@@ -89,6 +91,8 @@ type GetTagsParams struct{}
 type GetTagsParamsResource struct{}
 
 func (params GetTagsParams) ToResource() CommandParamsResource { return GetTagsParamsResource{} }
+func (params GetTagsParams) String() string                    { return "" }
+
 func (paramsResource GetTagsParamsResource) ToParams() (CommandParams, error) {
 	return GetTagsParams{}, nil
 }
@@ -106,6 +110,9 @@ func (params TransmitAdapterParams) ToResource() CommandParamsResource {
 		TxBytes: encodedString,
 	}
 	return resource
+}
+func (params TransmitAdapterParams) String() string {
+	return fmt.Sprintf("% x ", params.TxBytes)
 }
 func (paramsResource TransmitAdapterParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.TxBytes)
@@ -131,6 +138,9 @@ func (params TransmitTagParams) ToResource() CommandParamsResource {
 		TxBytes: encodedString,
 	}
 	return resource
+}
+func (params TransmitTagParams) String() string {
+	return fmt.Sprintf("% x ", params.TxBytes)
 }
 func (paramsResource TransmitTagParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.TxBytes)
@@ -160,6 +170,15 @@ func (params WriteNdefParams) ToResource() CommandParamsResource {
 	}
 	return resource
 }
+func (params WriteNdefParams) String() string {
+	res := ""
+
+	for _, m := range params.Message {
+		res += m.String() + "(" + m.Type.String() + ")\n"
+	}
+
+	return res
+}
 func (paramsResource WriteNdefParamsResource) ToParams() (CommandParams, error) {
 	var ndefRecords []ndefconv.NdefRecord
 	for _, ndefRecordResource := range paramsResource.Message {
@@ -179,6 +198,7 @@ type ReadNdefParams struct{}
 type ReadNdefParamsResource struct{}
 
 func (params ReadNdefParams) ToResource() CommandParamsResource { return ReadNdefParamsResource{} }
+func (params ReadNdefParams) String() string                    { return "" }
 func (paramsResource ReadNdefParamsResource) ToParams() (CommandParams, error) {
 	return ReadNdefParams{}, nil
 }
@@ -189,6 +209,7 @@ type FormatDefaultParamsResource struct{}
 func (params FormatDefaultParams) ToResource() CommandParamsResource {
 	return FormatDefaultParamsResource{}
 }
+func (params FormatDefaultParams) String() string { return "" }
 func (paramsResource FormatDefaultParamsResource) ToParams() (CommandParams, error) {
 	return FormatDefaultParams{}, nil
 }
@@ -199,6 +220,7 @@ type LockPermanentParamsResource struct{}
 func (params LockPermanentParams) ToResource() CommandParamsResource {
 	return LockPermanentParamsResource{}
 }
+func (params LockPermanentParams) String() string { return "" }
 func (paramsResource LockPermanentParamsResource) ToParams() (CommandParams, error) {
 	return LockPermanentParams{}, nil
 }
@@ -217,6 +239,9 @@ func (params SetPasswordParams) ToResource() CommandParamsResource {
 	}
 	return resource
 }
+func (params SetPasswordParams) String() string {
+	return fmt.Sprintf("% x ", params.Password)
+}
 func (paramsResource SetPasswordParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.Password)
 	if err != nil {
@@ -234,7 +259,7 @@ type RemovePasswordParamsResource struct{}
 func (params RemovePasswordParams) ToResource() CommandParamsResource {
 	return RemovePasswordParamsResource{}
 }
-
+func (params RemovePasswordParams) String() string { return "" }
 func (paramsResource RemovePasswordParamsResource) ToParams() (CommandParams, error) {
 	return RemovePasswordParams{}, nil
 }
@@ -253,6 +278,9 @@ func (params AuthPasswordParams) ToResource() CommandParamsResource {
 	}
 	return resource
 }
+func (params AuthPasswordParams) String() string {
+	return fmt.Sprintf("% x ", params.Password)
+}
 func (paramsResource AuthPasswordParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.Password)
 	if err != nil {
@@ -268,6 +296,7 @@ type GetDumpParams struct{}
 type GetDumpParamsResource struct{}
 
 func (params GetDumpParams) ToResource() CommandParamsResource { return GetDumpParamsResource{} }
+func (params GetDumpParams) String() string                    { return "" }
 func (paramsResource GetDumpParamsResource) ToParams() (CommandParams, error) {
 	return GetDumpParams{}, nil
 }
@@ -285,6 +314,9 @@ func (params SetLocaleParams) ToResource() CommandParamsResource {
 	}
 	return resource
 }
+func (params SetLocaleParams) String() string {
+	return params.Locale.String()
+}
 func (paramsResource SetLocaleParamsResource) ToParams() (CommandParams, error) {
 	locale, isValid := StringToLocale(paramsResource.Locale)
 	if !isValid {
@@ -300,6 +332,7 @@ func (paramsResource SetLocaleParamsResource) ToParams() (CommandParams, error) 
 
 type CommandOutput interface {
 	ToResource() CommandOutputResource
+	String() string
 }
 type CommandOutputResource interface {
 	ToOutput() (CommandOutput, error)
@@ -321,6 +354,15 @@ func (output GetTagsOutput) ToResource() CommandOutputResource {
 		Tags: tagResources,
 	}
 	return resource
+}
+func (output GetTagsOutput) String() string {
+	res := ""
+
+	for _, t := range output.Tags {
+		res += fmt.Sprintf("UID: % x\nATR: % x\nProduct: %s\nVendor: %s", t.Uid, t.Atr, t.Product, t.Vendor)
+	}
+
+	return res
 }
 func (outputResource GetTagsOutputResource) ToOutput() (CommandOutput, error) {
 	var tags []Tag
@@ -351,6 +393,9 @@ func (output TransmitAdapterOutput) ToResource() CommandOutputResource {
 	}
 	return resource
 }
+func (output TransmitAdapterOutput) String() string {
+	return fmt.Sprintf("% x ", output.RxBytes)
+}
 func (outputResource TransmitAdapterOutputResource) ToOutput() (CommandOutput, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(outputResource.RxBytes)
 	if err != nil {
@@ -376,6 +421,9 @@ func (output TransmitTagOutput) ToResource() CommandOutputResource {
 	}
 	return resource
 }
+func (output TransmitTagOutput) String() string {
+	return fmt.Sprintf("% x ", output.RxBytes)
+}
 func (outputResource TransmitTagOutputResource) ToOutput() (CommandOutput, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(outputResource.RxBytes)
 	if err != nil {
@@ -397,6 +445,21 @@ type ReadNdefOutputResource struct {
 func (output ReadNdefOutput) ToResource() CommandOutputResource {
 	return ReadNdefOutputResource{Ndef: output.Ndef.ToResource()}
 }
+func (output ReadNdefOutput) String() string {
+	res := ""
+
+	for _, m := range output.Ndef.Message {
+		res += m.String() + "(" + m.Type.String() + ")\n"
+	}
+
+	if output.Ndef.ReadOnly {
+		res += "Access: read only"
+	} else {
+		res += "Access: read and write"
+	}
+
+	return res
+}
 func (outputResource ReadNdefOutputResource) ToOutput() (CommandOutput, error) {
 	ndef, err := outputResource.Ndef.ToNdefRecord()
 	if err != nil {
@@ -410,6 +473,7 @@ type WriteNdefOutput struct{}
 type WriteNdefOutputResource struct{}
 
 func (output WriteNdefOutput) ToResource() CommandOutputResource { return WriteNdefOutputResource{} }
+func (output WriteNdefOutput) String() string { return "" }
 func (outputResource WriteNdefOutputResource) ToOutput() (CommandOutput, error) {
 	return WriteNdefOutput{}, nil
 }
@@ -420,6 +484,7 @@ type LockPermanentOutputResource struct{}
 func (output LockPermanentOutput) ToResource() CommandOutputResource {
 	return LockPermanentOutputResource{}
 }
+func (output LockPermanentOutput) String() string { return "" }
 func (outputResource LockPermanentOutputResource) ToOutput() (CommandOutput, error) {
 	return LockPermanentOutput{}, nil
 }
@@ -430,6 +495,7 @@ type SetPasswordOutputResource struct{}
 func (output SetPasswordOutput) ToResource() CommandOutputResource {
 	return SetPasswordOutputResource{}
 }
+func (output SetPasswordOutput) String() string { return "" }
 func (outputResource SetPasswordOutputResource) ToOutput() (CommandOutput, error) {
 	return SetPasswordOutput{}, nil
 }
@@ -440,6 +506,7 @@ type RemovePasswordOutputResource struct{}
 func (output RemovePasswordOutput) ToResource() CommandOutputResource {
 	return RemovePasswordOutputResource{}
 }
+func (output RemovePasswordOutput) String() string { return "" }
 func (outputResource RemovePasswordOutputResource) ToOutput() (CommandOutput, error) {
 	return RemovePasswordOutput{}, nil
 }
@@ -458,6 +525,9 @@ func (output AuthPasswordOutput) ToResource() CommandOutputResource {
 	}
 	return resource
 }
+func (output AuthPasswordOutput) String() string {
+	return fmt.Sprintf("% x ", output.Ack)
+}
 func (outputResource AuthPasswordOutputResource) ToOutput() (CommandOutput, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(outputResource.Ack)
 	if err != nil {
@@ -475,6 +545,7 @@ type FormatDefaultOutputResource struct{}
 func (output FormatDefaultOutput) ToResource() CommandOutputResource {
 	return FormatDefaultOutputResource{}
 }
+func (output FormatDefaultOutput) String() string { return "" }
 func (outputResource FormatDefaultOutputResource) ToOutput() (CommandOutput, error) {
 	return FormatDefaultOutput{}, nil
 }
@@ -495,6 +566,15 @@ func (output GetDumpOutput) ToResource() CommandOutputResource {
 		MemoryDump: pageDumpResources,
 	}
 	return resource
+}
+func (output GetDumpOutput) String() string {
+	res := ""
+
+	for _, m := range output.MemoryDump {
+		res += fmt.Sprintf("[%s] %s | %s", m.Page, m.Data, m.Info)
+	}
+
+	return res
 }
 func (outputResource GetDumpOutputResource) ToOutput() (CommandOutput, error) {
 	var pageDumps []PageDump
