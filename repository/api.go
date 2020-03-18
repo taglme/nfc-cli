@@ -55,6 +55,7 @@ func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.
 		return 0, err
 	}
 
+	runs := 0
 	for _, newJob := range newJobs {
 		if p.Expire != 60 {
 			newJob.ExpireAfter = p.Expire
@@ -64,13 +65,15 @@ func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.
 			newJob.JobName = p.JobName
 		}
 
+		runs += newJob.Repeat
+
 		_, err := s.client.Jobs.Add(adapterId, newJob)
 		if err != nil {
 			return len(newJobs), err
 		}
 	}
 
-	return len(newJobs), err
+	return runs, err
 }
 
 func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte, export bool) (*apiModels.Job, *apiModels.NewJob, error) {

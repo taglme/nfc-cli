@@ -3,13 +3,11 @@ package service
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	"log"
 	"os"
 )
 
 func (s *appService) writeToFile(filename string, data interface{}) (err error) {
 	var file *os.File
-	log.Println(s.ongoingJobs.published > 1, s.ongoingJobs.published, s.ongoingJobs.left == 1)
 	if s.append || (s.ongoingJobs.published > 1 && s.ongoingJobs.published-s.ongoingJobs.left > 1) {
 		file, err = os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
 	} else {
