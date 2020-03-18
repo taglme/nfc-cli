@@ -61,8 +61,10 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -96,8 +98,10 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -129,8 +133,10 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -163,8 +169,10 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -197,8 +205,10 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -237,8 +247,10 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -284,8 +296,10 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -327,8 +341,10 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = j.TotalRuns
-	s.ongoingJobs.left = j.TotalRuns
+	if j != nil {
+		s.ongoingJobs.published = j.TotalRuns
+		s.ongoingJobs.left = j.TotalRuns
+	}
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)

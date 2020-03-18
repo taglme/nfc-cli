@@ -13,13 +13,16 @@ MAC_OS?=darwin
 APP?=NFC CLI
 APP_ALIAS?=nfc-cli
 
-all: deps lint test build
+all: deps lint test
+
+build-windows:
+	GOOS=$(WIN_OS) go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${WIN_OS} -X 'main.SDKInfo=$(SDK_INFO)'" -o ${APP_ALIAS}.exe ./main.go
 
 build-mac:
-	go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${MAC_OS} -X 'main.SDKInfo=$(SDK_INFO)'" -o ${APP_ALIAS} ./main.go
+	GOOS=$(MAC_OS) go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${MAC_OS} -X 'main.SDKInfo=$(SDK_INFO)'" -o ${APP_ALIAS} ./main.go
 
-make build:
-	make build-mac
+build-linux:
+	 GOOS=$(LINUX_OS) go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${LINUX_OS} -X 'main.SDKInfo=$(SDK_INFO)'" -o ${APP_ALIAS} ./main.go
 
 lint:
 	golangci-lint run ./...
