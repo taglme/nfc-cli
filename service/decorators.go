@@ -79,7 +79,6 @@ func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) 
 }
 
 func (s *appService) withAdapter(ctx *cli.Context, cmdFunc func(*cli.Context) error) error {
-	fmt.Println("Available adapters:")
 	adapters, err := s.repository.GetAdapters()
 	if err != nil {
 		return err

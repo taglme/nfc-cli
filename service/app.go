@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/taglme/nfc-cli/models"
+	"github.com/taglme/nfc-cli/opts"
 	"github.com/urfave/cli/v2"
 	"os"
 	"sort"
@@ -15,6 +16,7 @@ type AppService interface {
 type appService struct {
 	repository ApiService
 	cliApp     cli.App
+	config     opts.Config
 
 	exitCh    chan struct{}
 	adapterId string
@@ -40,14 +42,15 @@ type appService struct {
 
 type CbCliStarted = func(url string)
 
-func New(repository ApiService, cb CbCliStarted) *appService {
+func New(repository ApiService, cb CbCliStarted, config opts.Config) *appService {
 	return &appService{
 		cliStartedCb: cb,
 		repository:   repository,
+		config:       config,
 		cliApp: cli.App{
 			Name:        "nfc-cli",
-			Version:     "v0.0.1",
 			Description: "Cross-platform CLI for reading NFC tags ",
+			Version:     config.Version,
 		},
 	}
 }

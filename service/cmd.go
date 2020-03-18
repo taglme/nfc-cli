@@ -10,6 +10,22 @@ import (
 func (s *appService) cmdVersion(*cli.Context) error {
 	s.cliStartedCb(s.host)
 	fmt.Printf("CLI version: %s\n", s.cliApp.Version)
+	if len(s.cliApp.Version) > 0 {
+		fmt.Printf("   Version: %s\n", s.cliApp.Version)
+	}
+	if len(s.config.Commit) > 0 {
+		fmt.Printf("   Commit: %s\n", s.config.Commit)
+	}
+	if len(s.config.SDK) > 0 {
+		fmt.Printf("   SDK: %s\n", s.config.SDK)
+	}
+	if len(s.config.Platform) > 0 {
+		fmt.Printf("   Platform: %s\n", s.config.Platform)
+	}
+	if len(s.config.BuildTime) > 0 {
+		fmt.Printf("   Build time: %s\n", s.config.BuildTime)
+	}
+
 	_, err := s.repository.GetVersion()
 
 	return err

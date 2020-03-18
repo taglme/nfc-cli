@@ -2,6 +2,7 @@ package repository
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/jedib0t/go-pretty/table"
 	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 	"log"
@@ -41,45 +42,37 @@ func (s *printerService) Reset() {
 }
 
 func (s *printerService) PrintAppInfo(info apiModels.AppInfo) {
-	s.writer.AppendHeader(table.Row{
-		"Name",
-		"Version",
-		"Commit",
-		"SDK Info",
-		"Platform",
-		"Build time",
-		"CheckSuccess",
-		"Supported",
-		"Have update",
-		"Update version",
-		"Update download",
-		"Started at",
-	})
-	s.writer.AppendRow(table.Row{
-		info.Name,
-		info.Version,
-		info.Commit,
-		info.SDKInfo,
-		info.Platform,
-		info.BuildTime,
-		info.CheckSuccess,
-		info.Supported,
-		info.HaveUpdate,
-		info.UpdateVersion,
-		info.UpdateDownload,
-		info.StartedAt,
-	})
-	s.writer.Render()
+	fmt.Println("Server:")
+	if len(info.Version) > 0 {
+		fmt.Printf("   Version: %s\n", info.Version)
+	}
+	if len(info.Commit) > 0 {
+		fmt.Printf("   Commit: %s\n", info.Commit)
+	}
+	if len(info.SDKInfo) > 0 {
+		fmt.Printf("   SDK: %s\n", info.SDKInfo)
+	}
+	if len(info.Platform) > 0 {
+		fmt.Printf("   Platform: %s\n", info.Platform)
+	}
+	if len(info.BuildTime) > 0 {
+		fmt.Printf("   Build time: %s\n", info.BuildTime)
+	}
 }
 
 func (s *printerService) PrintAdapters(adapters []apiModels.Adapter) {
-	s.writer.AppendHeader(table.Row{"Adapter ID", "Name", "Type", "Driver"})
-
-	for _, a := range adapters {
-		s.writer.AppendRow(table.Row{a.AdapterID, a.Name, a.Type.String(), a.Driver})
+	if len(adapters) == 0 {
+		fmt.Println("Adapters not found")
+		return
 	}
-	s.writer.SetStyle(table.StyleLight)
-	s.writer.Render()
+
+	fmt.Println("Adapters:")
+
+	for i, a := range adapters {
+		fmt.Printf("[%d] %s\n", i+1, a.Name)
+	}
+
+	fmt.Println()
 }
 
 func (s *printerService) PrintNewJob(job apiModels.NewJob) {
