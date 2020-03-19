@@ -101,6 +101,7 @@ type NdefRecordPayloadGeo struct {
 type NdefRecordPayloadAar struct {
 	PackageName string
 }
+
 type NdefRecordPayloadPoster struct {
 	Title string
 	Uri   string

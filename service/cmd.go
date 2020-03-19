@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
+	"github.com/taglme/nfc-cli/utils"
 	"github.com/urfave/cli/v2"
 )
 
@@ -39,7 +40,7 @@ func (s *appService) cmdAdapters(*cli.Context) error {
 }
 
 func (s *appService) cmdRead(ctx *cli.Context) error {
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -75,7 +76,7 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdDump(ctx *cli.Context) error {
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -109,7 +110,7 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdLock(ctx *cli.Context) error {
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -142,7 +143,7 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdFormat(ctx *cli.Context) error {
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -176,7 +177,7 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdRmPwd(ctx *cli.Context) error {
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -210,12 +211,12 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdSetPwd(ctx *cli.Context) error {
-	password, err := s.parseHexString(ctx.String(models.FlagPwd))
+	password, err := utils.ParseHexString(ctx.String(models.FlagPwd))
 	if err != nil {
 		return errors.Wrap(err, "Can't parse password arg")
 	}
 
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -255,12 +256,12 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 		return errors.New("Wrong target flag value. Can be either \"tag\" or \"adapter\".")
 	}
 
-	txBytes, err := s.parseHexString(ctx.String(models.FlagTxBytes))
+	txBytes, err := utils.ParseHexString(ctx.String(models.FlagTxBytes))
 	if err != nil {
 		return errors.Wrap(err, "Can't parse tx bytes string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
 
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}
@@ -297,7 +298,7 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 }
 
 func (s *appService) cmdWrite(ctx *cli.Context) error {
-	auth, err := s.parseHexString(s.auth)
+	auth, err := utils.ParseHexString(s.auth)
 	if err != nil {
 		return errors.Wrap(err, "Can't parse auth string. It should be HEX string i.e. \"03 AD F3 41\"")
 	}

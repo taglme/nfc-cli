@@ -1,25 +1,9 @@
 package service
 
 import (
-	"encoding/hex"
-	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/urfave/cli/v2"
-	"strings"
 )
-
-func (s *appService) parseHexString(hexStr string) (res []byte, err error) {
-	if len(hexStr) <= 0 {
-		return res, nil
-	}
-
-	decoded, err := hex.DecodeString(strings.Replace(hexStr, " ", "", -1))
-	if err != nil {
-		return res, errors.Wrap(err, "Can't decode hex string")
-	}
-
-	return decoded, nil
-}
 
 func (s *appService) getFlagsMap() map[string]cli.Flag {
 	return map[string]cli.Flag{

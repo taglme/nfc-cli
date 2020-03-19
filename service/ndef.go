@@ -5,6 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-cli/ndef"
+	"github.com/taglme/nfc-cli/utils"
 	"github.com/urfave/cli/v2"
 	"regexp"
 	"strconv"
@@ -27,7 +28,7 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		if len(payload) < 1 {
 			return nil, errors.New("Payload value can't be empty")
 		}
-		p, err := s.parseHexString(payload)
+		p, err := utils.ParseHexString(payload)
 		if err != nil {
 			return nil, errors.Wrap(err, "Can't parse payload. It should be HEX string i.e. \"03 AD F3 41\"")
 		}
@@ -146,7 +147,7 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 			return res, nil
 		}
 
-		c, err := s.parseHexString(content)
+		c, err := utils.ParseHexString(content)
 		if err != nil {
 			return nil, errors.Wrap(err, "Can't parse content string. It should be HEX string i.e. \"03 AD F3 41\"")
 		}

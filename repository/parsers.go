@@ -236,7 +236,7 @@ func parseNdefPayloadResourceByNdefPayloadType(t ndefconv.NdefRecordPayloadType,
 	switch t {
 	case ndefconv.NdefRecordPayloadTypeRaw:
 		res := ndefconv.NdefRecordPayloadRawResource{}
-		if tnf, ok := data["locale"].(int); ok {
+		if tnf, ok := data["tnf"].(int); ok {
 			res.Tnf = tnf
 		}
 		if t, ok := data["type"].(string); ok {

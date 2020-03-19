@@ -112,7 +112,7 @@ func (params TransmitAdapterParams) ToResource() CommandParamsResource {
 	return resource
 }
 func (params TransmitAdapterParams) String() string {
-	return fmt.Sprintf("% x ", params.TxBytes)
+	return fmt.Sprintf("% x", params.TxBytes)
 }
 func (paramsResource TransmitAdapterParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.TxBytes)
@@ -140,7 +140,7 @@ func (params TransmitTagParams) ToResource() CommandParamsResource {
 	return resource
 }
 func (params TransmitTagParams) String() string {
-	return fmt.Sprintf("% x ", params.TxBytes)
+	return fmt.Sprintf("% x", params.TxBytes)
 }
 func (paramsResource TransmitTagParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.TxBytes)
@@ -240,7 +240,7 @@ func (params SetPasswordParams) ToResource() CommandParamsResource {
 	return resource
 }
 func (params SetPasswordParams) String() string {
-	return fmt.Sprintf("% x ", params.Password)
+	return fmt.Sprintf("% x", params.Password)
 }
 func (paramsResource SetPasswordParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.Password)
@@ -279,7 +279,7 @@ func (params AuthPasswordParams) ToResource() CommandParamsResource {
 	return resource
 }
 func (params AuthPasswordParams) String() string {
-	return fmt.Sprintf("% x ", params.Password)
+	return fmt.Sprintf("% x", params.Password)
 }
 func (paramsResource AuthPasswordParamsResource) ToParams() (CommandParams, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(paramsResource.Password)
@@ -394,7 +394,7 @@ func (output TransmitAdapterOutput) ToResource() CommandOutputResource {
 	return resource
 }
 func (output TransmitAdapterOutput) String() string {
-	return fmt.Sprintf("% x ", output.RxBytes)
+	return fmt.Sprintf("% x", output.RxBytes)
 }
 func (outputResource TransmitAdapterOutputResource) ToOutput() (CommandOutput, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(outputResource.RxBytes)
@@ -422,7 +422,7 @@ func (output TransmitTagOutput) ToResource() CommandOutputResource {
 	return resource
 }
 func (output TransmitTagOutput) String() string {
-	return fmt.Sprintf("% x ", output.RxBytes)
+	return fmt.Sprintf("% x", output.RxBytes)
 }
 func (outputResource TransmitTagOutputResource) ToOutput() (CommandOutput, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(outputResource.RxBytes)
@@ -526,7 +526,7 @@ func (output AuthPasswordOutput) ToResource() CommandOutputResource {
 	return resource
 }
 func (output AuthPasswordOutput) String() string {
-	return fmt.Sprintf("% x ", output.Ack)
+	return fmt.Sprintf("% x", output.Ack)
 }
 func (outputResource AuthPasswordOutputResource) ToOutput() (CommandOutput, error) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(outputResource.Ack)
