@@ -33,7 +33,7 @@ func (s *appService) cmdVersion(*cli.Context) error {
 
 func (s *appService) cmdAdapters(*cli.Context) error {
 	s.cliStartedCb(s.host)
-	_, err := s.repository.GetAdapters()
+	_, err := s.repository.GetAdapters(true)
 
 	return err
 }
@@ -47,7 +47,7 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 	export := ctx.Bool(models.FlagExport)
 
 	var nj interface{}
-	j, nj, err := s.repository.AddGenericJob(
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandRead,
 			AdapterId: s.adapterId,
@@ -61,10 +61,8 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -84,7 +82,7 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 	export := ctx.Bool(models.FlagExport)
 
 	var nj interface{}
-	j, nj, err := s.repository.AddGenericJob(
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandDump,
 			AdapterId: s.adapterId,
@@ -98,10 +96,8 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -120,7 +116,7 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 
 	export := ctx.Bool(models.FlagExport)
 	var nj interface{}
-	j, nj, err := s.repository.AddGenericJob(
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandLock,
 			AdapterId: s.adapterId,
@@ -133,10 +129,8 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -155,7 +149,7 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 
 	export := ctx.Bool(models.FlagExport)
 	var nj interface{}
-	j, nj, err := s.repository.AddGenericJob(
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandFormat,
 			AdapterId: s.adapterId,
@@ -169,10 +163,8 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -191,7 +183,7 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 
 	export := ctx.Bool(models.FlagExport)
 	var nj interface{}
-	j, nj, err := s.repository.AddGenericJob(
+	_, nj, err = s.repository.AddGenericJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandRmpwd,
 			AdapterId: s.adapterId,
@@ -205,10 +197,8 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -232,7 +222,7 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 
 	export := ctx.Bool(models.FlagExport)
 	var nj interface{}
-	j, nj, err := s.repository.AddSetPwdJob(
+	_, nj, err = s.repository.AddSetPwdJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandSetpwd,
 			AdapterId: s.adapterId,
@@ -247,10 +237,8 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -280,7 +268,7 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	export := ctx.Bool(models.FlagExport)
 
 	var nj interface{}
-	j, nj, err := s.repository.AddTransmitJob(
+	_, nj, err = s.repository.AddTransmitJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandTransmit,
 			AdapterId: s.adapterId,
@@ -296,10 +284,8 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)
@@ -325,7 +311,7 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	export := ctx.Bool(models.FlagExport)
 
 	var nj interface{}
-	j, nj, err := s.repository.AddWriteJob(
+	_, nj, err = s.repository.AddWriteJob(
 		models.GenericJobParams{
 			Cmd:       models.CommandTransmit,
 			AdapterId: s.adapterId,
@@ -341,10 +327,8 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if j != nil {
-		s.ongoingJobs.published = j.TotalRuns
-		s.ongoingJobs.left = j.TotalRuns
-	}
+	s.ongoingJobs.published = s.repeat
+	s.ongoingJobs.left = s.repeat
 
 	if export && nj != nil {
 		err := s.writeToFile(s.output, nj)

@@ -78,7 +78,7 @@ func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) 
 }
 
 func (s *appService) withAdapter(ctx *cli.Context, cmdFunc func(*cli.Context) error) error {
-	adapters, err := s.repository.GetAdapters()
+	adapters, err := s.repository.GetAdapters(false)
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,6 @@ func (s *appService) withAdapter(ctx *cli.Context, cmdFunc func(*cli.Context) er
 	if err != nil {
 		return errors.Wrap(err, "Can't delete adapter jobs: ")
 	}
-	fmt.Println("Adapter jobs were deleted")
 
 	return cmdFunc(ctx)
 }
@@ -111,7 +110,6 @@ func (s *appService) eventHandler(e models.Event, data interface{}) {
 	}
 
 	if (e == models.EventJobFinished || e == models.EventJobDeleted) && (s.ongoingJobs.left < 1) {
-		fmt.Println("Deleting all jobs for the adapter...")
 		err := s.repository.DeleteAdapterJobs(s.adapterId)
 		if err != nil {
 			log.Printf("Can't delete adapter jobs on exit: %s", err)

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"encoding/base64"
+	"fmt"
 	"github.com/taglme/nfc-cli/models"
 	"github.com/taglme/nfc-cli/ndef"
 	"github.com/taglme/nfc-goclient/pkg/client"
@@ -31,13 +32,17 @@ func (s *ApiService) GetVersion() (apiModels.AppInfo, error) {
 	return i, err
 }
 
-func (s *ApiService) GetAdapters() ([]apiModels.Adapter, error) {
+func (s *ApiService) GetAdapters(withOutput bool) ([]apiModels.Adapter, error) {
 	a, err := s.client.Adapters.GetAll()
 	if err != nil {
 		return a, err
 	}
-	s.printer.PrintAdapters(a)
-	s.printer.Reset()
+
+	if withOutput {
+		s.printer.PrintAdapters(a)
+		s.printer.Reset()
+	}
+
 	return a, err
 }
 
@@ -54,6 +59,8 @@ func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.
 	if err != nil {
 		return 0, err
 	}
+
+	fmt.Printf("Loaded %d jobs.\n", len(newJobs))
 
 	runs := 0
 	for _, newJob := range newJobs {
@@ -84,6 +91,7 @@ func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte,
 	}
 
 	if export {
+		fmt.Printf("Job %s: successfully exported.\n", nj.JobName)
 		return nil, nj, nil
 	}
 

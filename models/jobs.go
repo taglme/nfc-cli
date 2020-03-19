@@ -9,3 +9,7 @@ type GenericJobParams struct {
 	Export    bool
 	JobName   string
 }
+
+type NewJob struct {
+	JobName string `json:"job_name" binding:"required"`
+}

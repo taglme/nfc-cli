@@ -84,30 +84,45 @@ func (s *ApiService) eventHandler(e apiModels.Event) {
 			log.Println("Can't get Job from Event.")
 			return
 		}
+
 		if e.Name.String() == "run_success" {
-			fmt.Printf("Job %s: run finished successfully.\n", j.JobName)
+			fmt.Printf("Job %s: run finished successfully.", j.JobName)
 		} else {
-			fmt.Printf("Job %s: run finished unsuccessfully.\n", j.JobName)
+			fmt.Printf("Job %s: run finished unsuccessfully.", j.JobName)
 		}
 
 		job, err := s.GetJob(j.AdapterID, j.JobID)
 		if err == nil {
 			// we are not handling this error as job simply can be deleted at this point so request will always fail at last iteration
-			fmt.Printf("Total %d runs (%d success, %d failed). Remain %d runs\n", job.TotalRuns, job.SuccessRuns, job.ErrorRuns, job.Repeat-job.SuccessRuns)
+			fmt.Printf("\nTotal %d runs (%d success, %d failed). Remain %d runs", job.TotalRuns, job.SuccessRuns, job.ErrorRuns, job.Repeat-job.SuccessRuns)
 		}
 
 		jobRun := parseJobRunStruct(e.Data)
-		fmt.Println("Run results:")
+		fmt.Printf("\nJob %s: -----run results start-----\n", j.JobName)
 		//s.printer.PrintStepResults(jobS)
 		for i, s := range jobRun.Results {
-			fmt.Printf("[%d] %s – %s (%s)\n", i+1, MapRunStepCmdToString[s.Command], s.Status.String(), s.Message)
-			fmt.Printf("Params: %s\n", s.Params.String())
-			fmt.Printf("Output: %s\n", s.Output.String())
+			fmt.Printf("[%d] %s – %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String())
+
+			if len(s.Message) > 0 {
+				fmt.Printf(" (%s)\n", s.Message)
+			} else {
+				fmt.Println()
+			}
+
+			pStr := s.Params.String()
+			if len(pStr) > 0 {
+				fmt.Printf("Params:\n%s\n", pStr)
+			}
+			oStr := s.Output.String()
+			if len(oStr) > 0 {
+				fmt.Printf("Output:\n%s\n", oStr)
+			}
 		}
 
 		if job.Repeat-job.SuccessRuns > 0 {
 			fmt.Printf("Job %s: waiting for NFC tag...\n", j.JobName)
 		}
+		fmt.Printf("\nJob %s: -----run results end-----\n", j.JobName)
 	case apiModels.EventNameJobFinished:
 		j, ok := e.GetJob()
 		if !ok {

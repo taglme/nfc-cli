@@ -571,7 +571,7 @@ func (output GetDumpOutput) String() string {
 	res := ""
 
 	for _, m := range output.MemoryDump {
-		res += fmt.Sprintf("[%s] %s | %s", m.Page, m.Data, m.Info)
+		res += fmt.Sprintf("%s %s | %s\n", m.Page, m.Data, m.Info)
 	}
 
 	return res
