@@ -87,7 +87,7 @@ func (s *ApiService) eventHandler(e apiModels.Event) {
 		fmt.Printf("\nJob %s: -----run results start-----\n", j.JobName)
 		//s.printer.PrintStepResults(jobS)
 		for i, s := range jobRun.Results {
-			fmt.Printf("[%d] %s – %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String())
+			fmt.Printf("[Step %d] %s – %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String())
 
 			if len(s.Message) > 0 {
 				fmt.Printf(" (%s)\n", s.Message)
