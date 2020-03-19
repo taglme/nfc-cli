@@ -29,20 +29,6 @@ func (s *ApiService) StopWsConnection() error {
 	return nil
 }
 
-//Остальные команды (без флага exported)
-//Job {job.Name}: submitted to adapter {adapter.Name} (job_submitted event)
-//Job {job.Name}: activated. Waiting for NFC tag... (job_activated event)
-//Job {job.Name}: execution started. Hold NFC tag steady... (run_started event) Job {job.Name}: run finished successfully.
-//Total {total} runs ({success} success, {failed} failed). Remain {repeat- success} runs. Run results:
-//[1] {stepResult.Command} – {stepResult.Status} ({stepResult.Message})
-//Params: {stepResult.Params}
-//Output: {stepResult.Output}
-//[2] {stepResult.Command} – { stepResult.Status} ({stepResult.Message})
-//Params: { stepResult.Params}
-//Output: { stepResult.Output}
-//(run_success or run_error event)
-//Job {job.Name}: finished successfully by adapter {adapter.Name} (job_finished)
-
 type CommandParams interface {
 	apiModels.CommandParams
 	Print(string)
