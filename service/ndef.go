@@ -88,7 +88,7 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 		reg := ctx.String(models.FlagNdefTypeVcardAddressRegion)
 		street := ctx.String(models.FlagNdefTypeVcardAddressStreet)
 		email := ctx.String(models.FlagNdefTypeVcardEmail)
-		if len(email) > 0 && !validateEmail(email) {
+		if len(email) > 0 && !utils.ValidateEmail(email) {
 			return nil, errors.New("Flag email should contain valid email")
 		}
 
@@ -224,9 +224,4 @@ func (s *appService) parseNdefPayloadFlags(ctx *cli.Context) (res ndef.NdefPaylo
 	}
 
 	return nil, errors.New(fmt.Sprintf("There's no Ndef Record Payload struct for such Ndef Type. Choose one from available: %v", models.NdefTypeValues))
-}
-
-func validateEmail(email string) bool {
-	Re := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
-	return Re.MatchString(email)
 }

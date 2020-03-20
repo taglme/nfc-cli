@@ -27,3 +27,8 @@ func TestParseHexString(t *testing.T) {
 	}
 	assert.Nil(t, res3)
 }
+
+func TestValidateEmail(t *testing.T) {
+	assert.True(t, ValidateEmail("email@gmail.com"))
+	assert.False(t, ValidateEmail("email"))
+}
