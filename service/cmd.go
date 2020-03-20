@@ -65,14 +65,7 @@ func (s *appService) cmdRead(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdDump(ctx *cli.Context) error {
@@ -100,13 +93,7 @@ func (s *appService) cmdDump(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdLock(ctx *cli.Context) error {
@@ -133,13 +120,7 @@ func (s *appService) cmdLock(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdFormat(ctx *cli.Context) error {
@@ -164,16 +145,8 @@ func (s *appService) cmdFormat(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	s.ongoingJobs.published = s.repeat
-	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdRmPwd(ctx *cli.Context) error {
@@ -201,13 +174,7 @@ func (s *appService) cmdRmPwd(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdSetPwd(ctx *cli.Context) error {
@@ -241,13 +208,7 @@ func (s *appService) cmdSetPwd(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdTransmit(ctx *cli.Context) error {
@@ -288,13 +249,7 @@ func (s *appService) cmdTransmit(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdWrite(ctx *cli.Context) error {
@@ -331,14 +286,7 @@ func (s *appService) cmdWrite(ctx *cli.Context) error {
 	s.ongoingJobs.published = s.repeat
 	s.ongoingJobs.left = s.repeat
 
-	if export && nj != nil {
-		err := s.writeToFile(s.output, nj)
-		if err != nil {
-			return errors.Wrapf(err, "Can't write to the file")
-		}
-	}
-
-	return err
+	return s.exportData(export, nj)
 }
 
 func (s *appService) cmdRun(ctx *cli.Context) error {
@@ -349,4 +297,15 @@ func (s *appService) cmdRun(ctx *cli.Context) error {
 	s.ongoingJobs.left = jobsPublished
 
 	return err
+}
+
+func (s *appService) exportData(export bool, data interface{}) error {
+	if export && data != nil {
+		err := s.writeToFile(s.output, data)
+		if err != nil {
+			return errors.Wrapf(err, "Can't write to the file")
+		}
+	}
+
+	return nil
 }
