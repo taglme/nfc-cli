@@ -10,51 +10,48 @@ import (
 	"github.com/taglme/nfc-goclient/pkg/ndefconv"
 )
 
-type ApiService struct {
-	client  *client.Client
-	printer PrinterService
+type RepositoryService struct {
+	client *client.Client
 }
 
-func New(c **client.Client) *ApiService {
-	return &ApiService{
-		client:  *c,
-		printer: newPrinter(),
+func New(c **client.Client) *RepositoryService {
+	return &RepositoryService{
+		client: *c,
 	}
 }
 
-func (s *ApiService) GetVersion() (apiModels.AppInfo, error) {
+func (s *RepositoryService) GetVersion() (apiModels.AppInfo, error) {
 	i, err := s.client.About.Get()
 	if err != nil {
 		return i, err
 	}
 
-	s.printer.PrintAppInfo(i)
+	s.printAppInfo(i)
 	return i, err
 }
 
-func (s *ApiService) GetAdapters(withOutput bool) ([]apiModels.Adapter, error) {
+func (s *RepositoryService) GetAdapters(withOutput bool) ([]apiModels.Adapter, error) {
 	a, err := s.client.Adapters.GetAll()
 	if err != nil {
 		return a, err
 	}
 
 	if withOutput {
-		s.printer.PrintAdapters(a)
-		s.printer.Reset()
+		s.printAdapters(a)
 	}
 
 	return a, err
 }
 
-func (s *ApiService) GetJob(adapterId, id string) (apiModels.Job, error) {
+func (s *RepositoryService) GetJob(adapterId, id string) (apiModels.Job, error) {
 	return s.client.Jobs.Get(adapterId, id)
 }
 
-func (s *ApiService) DeleteAdapterJobs(adapterId string) error {
+func (s *RepositoryService) DeleteAdapterJobs(adapterId string) error {
 	return s.client.Jobs.DeleteAll(adapterId)
 }
 
-func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (int, error) {
+func (s *RepositoryService) AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (int, error) {
 	newJobs, err := s.readFromFile(filename)
 	if err != nil {
 		return 0, err
@@ -83,7 +80,7 @@ func (s *ApiService) AddJobFromFile(adapterId string, filename string, p models.
 	return runs, err
 }
 
-func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte, export bool) (*apiModels.Job, *apiModels.NewJob, error) {
+func (s *RepositoryService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte, export bool) (*apiModels.Job, *apiModels.NewJob, error) {
 	if auth != nil {
 		nj.Steps = append(nj.Steps, apiModels.JobStepResource{})
 		copy(nj.Steps[1:], nj.Steps)
@@ -102,7 +99,7 @@ func (s *ApiService) addJob(nj *apiModels.NewJob, adapterId string, auth []byte,
 	return &j, nj, err
 }
 
-func (s *ApiService) AddGenericJob(p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error) {
+func (s *RepositoryService) AddGenericJob(p models.GenericJobParams) (*apiModels.Job, *apiModels.NewJob, error) {
 	nj := apiModels.NewJob{
 		JobName:     MapCliCmdToJobName[p.Cmd],
 		Repeat:      p.Repeat,
@@ -117,7 +114,7 @@ func (s *ApiService) AddGenericJob(p models.GenericJobParams) (*apiModels.Job, *
 	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (*apiModels.Job, *apiModels.NewJob, error) {
+func (s *RepositoryService) AddSetPwdJob(p models.GenericJobParams, password []byte) (*apiModels.Job, *apiModels.NewJob, error) {
 	jobStep := apiModels.JobStep{
 		Command: apiModels.CommandSetPassword,
 		Params: apiModels.SetPasswordParams{
@@ -141,7 +138,7 @@ func (s *ApiService) AddSetPwdJob(p models.GenericJobParams, password []byte) (*
 	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (*apiModels.Job, *apiModels.NewJob, error) {
+func (s *RepositoryService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (*apiModels.Job, *apiModels.NewJob, error) {
 	var nj apiModels.NewJob
 	var jobStep apiModels.JobStep
 
@@ -176,7 +173,7 @@ func (s *ApiService) AddTransmitJob(p models.GenericJobParams, txBytes []byte, t
 	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *ApiService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (*apiModels.Job, *apiModels.NewJob, error) {
+func (s *RepositoryService) AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (*apiModels.Job, *apiModels.NewJob, error) {
 	var nj apiModels.NewJob
 
 	jobStep := apiModels.JobStep{
@@ -267,7 +264,7 @@ var MapApiEventNameToCliEvent = map[apiModels.EventName]models.Event{
 	apiModels.EventNameRunError:         models.EventRunError,
 }
 
-func (s *ApiService) getAuthJobStep(pwd []byte) *apiModels.JobStepResource {
+func (s *RepositoryService) getAuthJobStep(pwd []byte) *apiModels.JobStepResource {
 	encodedString := base64.StdEncoding.EncodeToString(pwd)
 
 	return &apiModels.JobStepResource{

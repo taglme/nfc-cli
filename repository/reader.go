@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func (s *ApiService) readFromFile(filename string) (data []apiModels.NewJob, err error) {
+func (s *RepositoryService) readFromFile(filename string) (data []apiModels.NewJob, err error) {
 	file, err := os.OpenFile(filename, os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		return nil, errors.Wrap(err, "Can't open the file: ")

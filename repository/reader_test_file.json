@@ -1,0 +1,2 @@
+{"job_name":"Write tag","repeat":1,"expire_after":60,"steps":[{"command":"write_ndef","params":{"message":[{"type":"url","data":{"url":"https://anyurl.com"}}]}}]}
+{"job_name":"Second job","repeat":2,"expire_after":60,"steps":[{"command":"write_ndef","params":{"message":[{"type":"url","data":{"url":"https://anyurl.com"}}]}}]}

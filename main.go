@@ -16,7 +16,7 @@ var BuildTime string
 
 func main() {
 	var nfc *client.Client
-	var rep *repository.ApiService
+	var rep *repository.RepositoryService
 	var app service.AppService
 
 	cbCliStarted := func(url string) {

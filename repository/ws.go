@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func (s *ApiService) RunWsConnection(handler func(models.Event, interface{})) error {
+func (s *RepositoryService) RunWsConnection(handler func(models.Event, interface{})) error {
 	s.client.Ws.OnEvent(func(event apiModels.Event) {
 		s.eventHandler(event)
 		handler(MapApiEventNameToCliEvent[event.Name], event.Data)
@@ -21,7 +21,7 @@ func (s *ApiService) RunWsConnection(handler func(models.Event, interface{})) er
 	return nil
 }
 
-func (s *ApiService) StopWsConnection() error {
+func (s *RepositoryService) StopWsConnection() error {
 	if s.client.Ws.IsConnected() {
 		return s.client.Ws.Disconnect()
 	}
@@ -29,18 +29,7 @@ func (s *ApiService) StopWsConnection() error {
 	return nil
 }
 
-type CommandParams interface {
-	apiModels.CommandParams
-	Print(string)
-}
-
-type TransmitAdapterParams apiModels.TransmitAdapterParams
-
-func (m TransmitAdapterParams) Print() string {
-	return string(m.TxBytes)
-}
-
-func (s *ApiService) eventHandler(e apiModels.Event) {
+func (s *RepositoryService) eventHandler(e apiModels.Event) {
 	switch e.Name {
 	case apiModels.EventNameJobSubmited:
 		j, ok := e.GetJob()
@@ -85,7 +74,7 @@ func (s *ApiService) eventHandler(e apiModels.Event) {
 
 		jobRun := parseJobRunStruct(e.Data)
 		fmt.Printf("\nJob %s: -----run results start-----\n", j.JobName)
-		//s.printer.PrintStepResults(jobS)
+
 		for i, s := range jobRun.Results {
 			fmt.Printf("[Step %d] %s – %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String())
 
