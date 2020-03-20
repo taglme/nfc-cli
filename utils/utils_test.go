@@ -25,5 +25,5 @@ func TestParseHexString(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	assert.Equal(t, []byte{}, res3)
+	assert.Nil(t, res3)
 }

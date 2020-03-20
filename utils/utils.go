@@ -8,7 +8,7 @@ import (
 
 func ParseHexString(hexStr string) ([]byte, error) {
 	if len(hexStr) <= 0 {
-		return []byte{}, nil
+		return nil, nil
 	}
 
 	decoded, err := hex.DecodeString(strings.Replace(hexStr, " ", "", -1))
