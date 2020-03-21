@@ -77,13 +77,18 @@ func (s *RepositoryService) eventHandler(e apiModels.Event) {
 				fmt.Println()
 			}
 
-			pStr := s.Params.String()
-			if len(pStr) > 0 {
-				fmt.Printf("Params:\n%s\n", pStr)
+			if s.Params != nil {
+				pStr := s.Params.String()
+				if len(pStr) > 0 {
+					fmt.Printf("Params:\n%s\n", pStr)
+				}
 			}
-			oStr := s.Output.String()
-			if len(oStr) > 0 {
-				fmt.Printf("Output:\n%s\n", oStr)
+
+			if s.Output != nil {
+				oStr := s.Output.String()
+				if len(oStr) > 0 {
+					fmt.Printf("Output:\n%s\n", oStr)
+				}
 			}
 		}
 
