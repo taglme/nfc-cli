@@ -109,7 +109,7 @@ func (s *appService) eventHandler(e models.Event, data interface{}) {
 		}
 	}
 
-	if (e == models.EventJobFinished || e == models.EventJobDeleted) && (s.ongoingJobs.left < 1) {
+	if (e == models.EventJobFinished) && (s.ongoingJobs.left < 1) {
 		err := s.repository.DeleteAdapterJobs(s.adapterId)
 		if err != nil {
 			log.Printf("Can't delete adapter jobs on exit: %s", err)
