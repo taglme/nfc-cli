@@ -75,7 +75,7 @@ func Test_parseOutputByCmd(t *testing.T) {
 		},
 	}
 	res = parseOutputByCmd(apiModels.CommandReadNdef, readNdef)
-	assert.Equal(t, "any text(text)\nAccess: read only", res.String())
+	assert.Equal(t, "Record 1: any text (text)\nAccess: read only", res.String())
 
 	res = parseOutputByCmd(apiModels.CommandFormatDefault, empty)
 	assert.Equal(t, "", res.String())
@@ -105,7 +105,7 @@ func Test_parseOutputByCmd(t *testing.T) {
 		},
 	}
 	res = parseOutputByCmd(apiModels.CommandGetDump, dump)
-	assert.Equal(t, "[string] string | string\n", res.String())
+	assert.Equal(t, "[string] string | string", res.String())
 }
 
 func Test_parseParamsByCmd(t *testing.T) {
@@ -138,7 +138,7 @@ func Test_parseParamsByCmd(t *testing.T) {
 		},
 	}
 	res = parseParamsByCmd(apiModels.CommandWriteNdef, writeNdef)
-	assert.Equal(t, "any text(text)\n", res.String())
+	assert.Equal(t, "Record 1: any text (text)", res.String())
 
 	res = parseParamsByCmd(apiModels.CommandFormatDefault, empty)
 	assert.Equal(t, "", res.String())

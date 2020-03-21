@@ -52,8 +52,7 @@ func (s *RepositoryService) eventHandler(e apiModels.Event) {
 			return
 		}
 		fmt.Printf("Job %s: execution started. Hold NFC tag steady...\n", j.JobName)
-	case apiModels.EventNameRunError:
-	case apiModels.EventNameRunSuccess:
+	case apiModels.EventNameRunSuccess, apiModels.EventNameRunError:
 		j, ok := e.GetJob()
 		if !ok {
 			log.Println("Can't get Job from Event.")
@@ -61,19 +60,13 @@ func (s *RepositoryService) eventHandler(e apiModels.Event) {
 		}
 
 		if e.Name.String() == "run_success" {
-			fmt.Printf("Job %s: run finished successfully.", j.JobName)
+			fmt.Printf("Job %s: run finished successfully.\n", j.JobName)
 		} else {
-			fmt.Printf("Job %s: run finished unsuccessfully.", j.JobName)
-		}
-
-		job, err := s.GetJob(j.AdapterID, j.JobID)
-		if err == nil {
-			// we are not handling this error as job simply can be deleted at this point so request will always fail at last iteration
-			fmt.Printf("\nTotal %d runs (%d success, %d failed). Remain %d runs", job.TotalRuns, job.SuccessRuns, job.ErrorRuns, job.Repeat-job.SuccessRuns)
+			fmt.Printf("Job %s: run finished unsuccessfully.\n", j.JobName)
 		}
 
 		jobRun := parseJobRunStruct(e.Data)
-		fmt.Printf("\nJob %s: -----run results start-----\n", j.JobName)
+		fmt.Printf("Job %s: -----run results start-----\n", j.JobName)
 
 		for i, s := range jobRun.Results {
 			fmt.Printf("[Step %d] %s – %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String())
@@ -94,18 +87,26 @@ func (s *RepositoryService) eventHandler(e apiModels.Event) {
 			}
 		}
 
-		if job.Repeat-job.SuccessRuns > 0 {
-			fmt.Printf("Job %s: waiting for NFC tag...\n", j.JobName)
+		fmt.Printf("Job %s: -----run results end-----\n", j.JobName)
+
+		job, err := s.GetJob(j.AdapterID, j.JobID)
+		if err == nil {
+			// we are not handling this error as job simply can be deleted at this point so request will always fail at last iteration
+			fmt.Printf("Job %s: total %d runs (%d success, %d failed). Remain %d runs\n", job.JobName, job.TotalRuns, job.SuccessRuns, job.ErrorRuns, job.Repeat-job.SuccessRuns)
+
+			if job.Repeat-job.SuccessRuns > 0 {
+				fmt.Printf("Job %s: waiting for NFC tag...\n", j.JobName)
+			}
 		}
-		fmt.Printf("\nJob %s: -----run results end-----\n", j.JobName)
 	case apiModels.EventNameJobFinished:
-		j, ok := e.GetJob()
+		job, ok := e.GetJob()
 		if !ok {
 			log.Println("Can't get Job from Event.")
 			return
 		}
 
-		fmt.Printf("Job %s: finished successfully by adapter %s\n", j.JobName, j.AdapterName)
+		fmt.Printf("Job %s: total %d runs (%d success, %d failed). Remain %d runs\n", job.JobName, job.TotalRuns, job.SuccessRuns, job.ErrorRuns, job.Repeat-job.SuccessRuns)
+		fmt.Printf("Job %s: finished successfully by adapter %s\n", job.JobName, job.AdapterName)
 	case apiModels.EventNameJobDeleted:
 		fmt.Println("Job has been deleted")
 	}

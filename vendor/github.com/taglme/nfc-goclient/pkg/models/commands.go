@@ -173,8 +173,12 @@ func (params WriteNdefParams) ToResource() CommandParamsResource {
 func (params WriteNdefParams) String() string {
 	res := ""
 
-	for _, m := range params.Message {
-		res += m.String() + "(" + m.Type.String() + ")\n"
+	for i, m := range params.Message {
+		res += fmt.Sprintf("Record %d: %s (%s)", i+1, m.String(), m.Type.String())
+
+		if i < len(params.Message)-1 {
+			res += fmt.Sprintf("\n")
+		}
 	}
 
 	return res
@@ -448,8 +452,8 @@ func (output ReadNdefOutput) ToResource() CommandOutputResource {
 func (output ReadNdefOutput) String() string {
 	res := ""
 
-	for _, m := range output.Ndef.Message {
-		res += m.String() + "(" + m.Type.String() + ")\n"
+	for i, m := range output.Ndef.Message {
+		res += fmt.Sprintf("Record %d: %s (%s)\n", i+1, m.String(), m.Type.String())
 	}
 
 	if output.Ndef.ReadOnly {
@@ -473,7 +477,7 @@ type WriteNdefOutput struct{}
 type WriteNdefOutputResource struct{}
 
 func (output WriteNdefOutput) ToResource() CommandOutputResource { return WriteNdefOutputResource{} }
-func (output WriteNdefOutput) String() string { return "" }
+func (output WriteNdefOutput) String() string                    { return "" }
 func (outputResource WriteNdefOutputResource) ToOutput() (CommandOutput, error) {
 	return WriteNdefOutput{}, nil
 }
@@ -570,8 +574,12 @@ func (output GetDumpOutput) ToResource() CommandOutputResource {
 func (output GetDumpOutput) String() string {
 	res := ""
 
-	for _, m := range output.MemoryDump {
-		res += fmt.Sprintf("%s %s | %s\n", m.Page, m.Data, m.Info)
+	for i, m := range output.MemoryDump {
+		res += fmt.Sprintf("%s %s | %s", m.Page, m.Data, m.Info)
+
+		if i < len(output.MemoryDump)-1 {
+			res += fmt.Sprintf("\n")
+		}
 	}
 
 	return res

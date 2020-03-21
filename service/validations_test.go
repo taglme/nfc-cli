@@ -121,7 +121,7 @@ func Test_validateNdefRecordPayloadMime(t *testing.T) {
 	assert.Equal(t, "any content", p.ContentASCII)
 	assert.Nil(t, p.ContentHEX)
 
-	p, err = validateNdefRecordPayloadMime("type", "hex", "any content")
+	_, err = validateNdefRecordPayloadMime("type", "hex", "any content")
 	assert.Error(t, err)
 
 	p, err = validateNdefRecordPayloadMime("type", "hex", "03 AD F3 41")

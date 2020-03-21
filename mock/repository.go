@@ -7,9 +7,7 @@ import (
 	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 )
 
-type MockedRepositoryService struct {
-	client *client.Client
-}
+type MockedRepositoryService struct{}
 
 func NewRepositoryService(c **client.Client) *MockedRepositoryService {
 	return &MockedRepositoryService{}
@@ -94,7 +92,4 @@ func (s *MockedRepositoryService) RunWsConnection(handler func(models.Event, int
 
 func (s *MockedRepositoryService) StopWsConnection() error {
 	return nil
-}
-
-func (s *MockedRepositoryService) eventHandler(e apiModels.Event) {
 }

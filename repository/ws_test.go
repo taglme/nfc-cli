@@ -137,6 +137,42 @@ func TestRepositoryService_eventHandler(t *testing.T) {
 		AdapterName: "Adapter name",
 		Data: map[string]interface{}{
 			"job_name": "Job Name",
+			"tag": map[string]interface{}{
+				"tag_id":       "id",
+				"kind":         "kind",
+				"href":         "link",
+				"type":         apiModels.TagTypeBluetooth.String(),
+				"adapter_id":   "id",
+				"adapter_name": "name",
+				"uid":          "qhIyag==",
+				"atr":          "qhIyag==",
+				"product":      "product",
+				"vendor":       "vendor",
+			},
+		},
+		CreatedAt: time.Time{},
+	}
+	rep.eventHandler(e)
+
+	e = apiModels.Event{
+		EventID:     "",
+		Name:        apiModels.EventNameRunSuccess,
+		AdapterID:   "",
+		AdapterName: "Adapter name",
+		Data: map[string]interface{}{
+			"job_name": "Job Name",
+			"tag": map[string]interface{}{
+				"tag_id":       "id",
+				"kind":         "kind",
+				"href":         "link",
+				"type":         apiModels.TagTypeBluetooth.String(),
+				"adapter_id":   "id",
+				"adapter_name": "name",
+				"uid":          "qhIyag==",
+				"atr":          "qhIyag==",
+				"product":      "product",
+				"vendor":       "vendor",
+			},
 		},
 		CreatedAt: time.Time{},
 	}

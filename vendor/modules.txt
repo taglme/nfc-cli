@@ -16,7 +16,7 @@ github.com/russross/blackfriday/v2
 github.com/shurcooL/sanitized_anchor_name
 # github.com/stretchr/testify v1.5.1
 github.com/stretchr/testify/assert
-# github.com/taglme/nfc-goclient v1.1.2
+# github.com/taglme/nfc-goclient v1.1.3
 github.com/taglme/nfc-goclient/pkg/client
 github.com/taglme/nfc-goclient/pkg/models
 github.com/taglme/nfc-goclient/pkg/ndefconv
