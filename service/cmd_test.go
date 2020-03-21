@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/stretchr/testify/assert"
 	"github.com/taglme/nfc-cli/mock"
 	"github.com/taglme/nfc-cli/models"
@@ -8,7 +9,10 @@ import (
 	"github.com/taglme/nfc-cli/repository"
 	"github.com/urfave/cli/v2"
 	"os"
+	"os/signal"
+	"syscall"
 	"testing"
+	"time"
 )
 
 func Test_exportData(t *testing.T) {
@@ -146,4 +150,30 @@ func Test_cmdWrite(t *testing.T) {
 	assert.Nil(t, err)
 	err = os.Remove(app.output)
 	assert.Nil(t, err)
+}
+
+func Test_cmdRun(t *testing.T) {
+	rep := mock.NewRepositoryService(nil)
+	config := opts.Config{}
+	cbCliStarted := func(string) {}
+	app := New(rep, cbCliStarted, config)
+	os.Args = []string{"nfc-cli", models.CommandRun, "--" + models.FlagFile, "cmd_test_file.json"}
+
+	c1, cancel := context.WithCancel(context.Background())
+	go func(ctx context.Context) {
+		err := app.Start()
+		assert.Nil(t, err)
+		time.Sleep(time.Duration(1000) * time.Millisecond)
+		err = syscall.Kill(syscall.Getpid(), syscall.SIGINT)
+		assert.Nil(t, err)
+	}(c1)
+
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, os.Interrupt)
+	go func() {
+		for range signalCh {
+			cancel()
+			return
+		}
+	}()
 }
