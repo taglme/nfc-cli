@@ -25,7 +25,7 @@ func (s *appService) withWsConnect(ctx *cli.Context, cmdFunc func(*cli.Context) 
 		return nil
 	}
 
-	err := s.repository.RunWsConnection(s.eventHandler)
+	err := s.repository.RunWsConnection(s.eventHandler, s.errorHandler)
 	if err != nil {
 		return errors.Wrap(err, "Can't establish the WS connection")
 	}
@@ -116,6 +116,13 @@ func (s *appService) eventHandler(e models.Event, data interface{}) {
 		}
 
 		fmt.Println("Exiting...")
+		s.exitCh <- struct{}{}
+	}
+}
+
+func (s *appService) errorHandler(err error) {
+	if err != nil {
+		fmt.Println("Server connection unexpectedly closed. Exiting...")
 		s.exitCh <- struct{}{}
 	}
 }

@@ -147,6 +147,7 @@ func Test_cmdWrite(t *testing.T) {
 	err = os.Remove(app.output)
 	assert.Nil(t, err)
 }
+
 //
 //func Test_cmdRun(t *testing.T) {
 //	rep := mock.NewRepositoryService(nil)

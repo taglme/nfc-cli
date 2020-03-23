@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/taglme/nfc-cli/mock"
@@ -46,6 +47,29 @@ func Test_eventHandler(t *testing.T) {
 		app.eventHandler(models.EventJobFinished, "test data")
 	}(c1)
 	assert.Equal(t, 0, app.ongoingJobs.left)
+	time.Sleep(time.Duration(1000) * time.Millisecond)
+	cancel()
+	select {
+	case x, ok := <-app.exitCh:
+		assert.True(t, ok)
+		assert.NotNil(t, x)
+	default:
+		t.Error("Exit haven't been received")
+	}
+	close(app.exitCh)
+}
+
+func Test_errorHandler(t *testing.T) {
+	rep := mock.NewRepositoryService(nil)
+	config := opts.Config{}
+	cbCliStarted := func(string) {}
+	app := New(rep, cbCliStarted, config)
+	app.exitCh = make(chan struct{})
+
+	c1, cancel := context.WithCancel(context.Background())
+	go func(ctx context.Context) {
+		app.errorHandler(errors.New("websocket closed on server side"))
+	}(c1)
 	time.Sleep(time.Duration(1000) * time.Millisecond)
 	cancel()
 	select {

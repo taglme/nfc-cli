@@ -86,7 +86,7 @@ func (s *MockedRepositoryService) AddWriteJob(p models.GenericJobParams, r ndef.
 	return s.addJob(&nj, p.AdapterId, p.Auth, p.Export)
 }
 
-func (s *MockedRepositoryService) RunWsConnection(handler func(models.Event, interface{})) error {
+func (s *MockedRepositoryService) RunWsConnection(handler func(models.Event, interface{}), errHandler func(error)) error {
 	return nil
 }
 

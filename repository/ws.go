@@ -7,10 +7,14 @@ import (
 	"log"
 )
 
-func (s *RepositoryService) RunWsConnection(handler func(models.Event, interface{})) error {
+func (s *RepositoryService) RunWsConnection(eHandler func(models.Event, interface{}), errHandler func(error)) error {
 	s.client.Ws.OnEvent(func(event apiModels.Event) {
 		s.eventHandler(event)
-		handler(MapApiEventNameToCliEvent[event.Name], event.Data)
+		eHandler(MapApiEventNameToCliEvent[event.Name], event.Data)
+	})
+
+	s.client.Ws.OnError(func(err error) {
+		errHandler(err)
 	})
 
 	err := s.client.Ws.Connect()

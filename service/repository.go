@@ -16,6 +16,6 @@ type ApiService interface {
 	AddTransmitJob(p models.GenericJobParams, txBytes []byte, target string) (*apiModels.Job, *apiModels.NewJob, error)
 	AddWriteJob(p models.GenericJobParams, r ndef.NdefPayload, protect bool) (*apiModels.Job, *apiModels.NewJob, error)
 	AddJobFromFile(adapterId string, filename string, p models.GenericJobParams) (int, error)
-	RunWsConnection(handler func(models.Event, interface{})) error
+	RunWsConnection(handler func(models.Event, interface{}), errHandler func(error)) error
 	StopWsConnection() error
 }
