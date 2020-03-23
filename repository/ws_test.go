@@ -49,6 +49,10 @@ func eventHandler(e models.Event, data interface{}) {
 	fmt.Println("Event received")
 }
 
+func errHandler(err error) {
+	fmt.Println("Error received")
+}
+
 func TestRepositoryService_RunWsConnection_StopWSConnection(t *testing.T) {
 	s := httptest.NewServer(http.HandlerFunc(echo))
 	defer s.Close()
@@ -57,7 +61,7 @@ func TestRepositoryService_RunWsConnection_StopWSConnection(t *testing.T) {
 	rep := New(&nfc)
 
 	assert.Equal(t, false, rep.client.Ws.IsConnected())
-	err := rep.RunWsConnection(eventHandler)
+	err := rep.RunWsConnection(eventHandler, errHandler)
 	assert.Nil(t, err)
 	assert.Equal(t, true, rep.client.Ws.IsConnected())
 	err = rep.StopWsConnection()
