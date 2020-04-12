@@ -1,7 +1,7 @@
 export GO111MODULE=on
 
 
-VERSION?=1.3.1
+VERSION?=1.0.0
 COMMIT?=$(shell git rev-parse --short HEAD)
 BUILD_TIME?=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
 SDK_INFO := $(shell go version)

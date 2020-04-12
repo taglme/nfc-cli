@@ -109,7 +109,7 @@ func NewApp() *App {
 	return &App{
 		Name:         filepath.Base(os.Args[0]),
 		HelpName:     filepath.Base(os.Args[0]),
-		Usage:        "A new cli application",
+		Usage:        "cli application for NFC tags operations",
 		UsageText:    "",
 		BashComplete: DefaultAppComplete,
 		Action:       helpCommand.Action,
@@ -137,7 +137,7 @@ func (a *App) Setup() {
 	}
 
 	if a.Usage == "" {
-		a.Usage = "A new cli application"
+		a.Usage = "cli application for NFC tags operations"
 	}
 
 	if a.Version == "" {
