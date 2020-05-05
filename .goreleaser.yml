@@ -60,7 +60,7 @@ blobs:
 - provider: s3
   region: eu-west-1
   disableSSL: true
-  bucket: static.tagl.me/apps/taglme-cli-desktop
+  bucket: static.tagl.me
   ids:
     - default
     - latest
