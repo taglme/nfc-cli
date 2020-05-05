@@ -2,29 +2,30 @@ package repository
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
-	"github.com/taglme/nfc-cli/models"
-	"github.com/taglme/nfc-cli/ndef"
-	"github.com/taglme/nfc-goclient/pkg/client"
-	apiModels "github.com/taglme/nfc-goclient/pkg/models"
-	"github.com/taglme/nfc-goclient/pkg/ndefconv"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/taglme/nfc-cli/models"
+	"github.com/taglme/nfc-cli/ndef"
+	"github.com/taglme/nfc-goclient/pkg/client"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
+	"github.com/taglme/nfc-goclient/pkg/ndefconv"
 )
 
 func TestNew(t *testing.T) {
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	assert.NotNil(t, rep)
 }
 
 func TestRepositoryService_getAuthJobStep(t *testing.T) {
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	js := rep.getAuthJobStep([]byte{0xa6, 0x12, 0x66, 0xBA})
@@ -60,7 +61,7 @@ func TestRepositoryService_addJob(t *testing.T) {
 
 	defer server.Close()
 
-	nfc := client.New(strings.Replace(server.URL, "http://", "", -1), "en")
+	nfc := client.New(strings.Replace(server.URL, "http://", "", -1))
 	rep := New(&nfc)
 
 	nj := apiModels.NewJob{
@@ -121,7 +122,7 @@ func TestRepositoryService_addJob_withAuth(t *testing.T) {
 
 	defer server.Close()
 
-	nfc := client.New(strings.Replace(server.URL, "http://", "", -1), "en")
+	nfc := client.New(strings.Replace(server.URL, "http://", "", -1))
 	rep := New(&nfc)
 
 	nj := apiModels.NewJob{
@@ -154,7 +155,7 @@ func TestRepositoryService_addJob_withAuth(t *testing.T) {
 }
 
 func TestRepositoryService_addJob_exported(t *testing.T) {
-	nfc := client.New("", "en")
+	nfc := client.New("")
 	rep := New(&nfc)
 
 	nj := apiModels.NewJob{
@@ -190,7 +191,7 @@ func TestRepositoryService_AddGenericJob(t *testing.T) {
 		JobName:   "Dump tag",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	_, nj, err := rep.AddGenericJob(p)
@@ -216,7 +217,7 @@ func TestRepositoryService_AddSetPwdJob(t *testing.T) {
 		JobName:   "job name",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	_, nj, err := rep.AddSetPwdJob(p, []byte{0xa6, 0x12, 0x66, 0xBA})
@@ -243,7 +244,7 @@ func TestRepositoryService_AddTransmitJob_Adapter(t *testing.T) {
 		JobName:   "job name",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	_, nj, err := rep.AddTransmitJob(p, []byte{0xa6, 0x12, 0x66, 0xBA}, "adapter")
@@ -270,7 +271,7 @@ func TestRepositoryService_AddTransmitJob_Tag(t *testing.T) {
 		JobName:   "job name",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	_, nj, err := rep.AddTransmitJob(p, []byte{0xa6, 0x12, 0x66, 0xBA}, "tag")
@@ -297,7 +298,7 @@ func TestRepositoryService_AddWriteJob(t *testing.T) {
 		JobName:   "job name",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	_, nj, err := rep.AddWriteJob(p, ndef.NdefRecordPayloadUrl{Url: "http://url"}, false)
@@ -329,7 +330,7 @@ func TestRepositoryService_AddWriteJob_Protect(t *testing.T) {
 		JobName:   "job name",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	_, nj, err := rep.AddWriteJob(p, ndef.NdefRecordPayloadUrl{Url: "http://url"}, true)
@@ -385,7 +386,7 @@ func TestRepositoryService_AddJobFromFile(t *testing.T) {
 
 	defer server.Close()
 
-	nfc := client.New(strings.Replace(server.URL, "http://", "", -1), "en")
+	nfc := client.New(strings.Replace(server.URL, "http://", "", -1))
 	rep := New(&nfc)
 
 	p := models.GenericJobParams{

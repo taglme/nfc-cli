@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+
 	"github.com/taglme/nfc-cli/opts"
 	"github.com/taglme/nfc-cli/repository"
 	"github.com/taglme/nfc-cli/service"
 	"github.com/taglme/nfc-goclient/pkg/client"
-	"log"
 )
 
 var Version string
@@ -20,7 +21,7 @@ func main() {
 	var app service.AppService
 
 	cbCliStarted := func(url string) {
-		nfc = client.New(url, "en")
+		nfc = client.New(url)
 		rep = repository.New(&nfc)
 		app.SetRepository(rep)
 	}

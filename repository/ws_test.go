@@ -3,17 +3,18 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"github.com/stretchr/testify/assert"
-	"github.com/taglme/nfc-cli/models"
-	"github.com/taglme/nfc-goclient/pkg/client"
-	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/stretchr/testify/assert"
+	"github.com/taglme/nfc-cli/models"
+	"github.com/taglme/nfc-goclient/pkg/client"
+	apiModels "github.com/taglme/nfc-goclient/pkg/models"
 )
 
 var upgrader = websocket.Upgrader{}
@@ -57,7 +58,7 @@ func TestRepositoryService_RunWsConnection_StopWSConnection(t *testing.T) {
 	s := httptest.NewServer(http.HandlerFunc(echo))
 	defer s.Close()
 
-	nfc := client.New(strings.Replace(s.URL, "http://", "", -1), "en")
+	nfc := client.New(strings.Replace(s.URL, "http://", "", -1))
 	rep := New(&nfc)
 
 	assert.Equal(t, false, rep.client.Ws.IsConnected())
@@ -70,7 +71,7 @@ func TestRepositoryService_RunWsConnection_StopWSConnection(t *testing.T) {
 }
 
 func TestRepositoryService_eventHandler(t *testing.T) {
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	e := apiModels.Event{
@@ -210,7 +211,7 @@ func TestRepositoryService_eventHandler_run(t *testing.T) {
 	}))
 
 	defer server.Close()
-	nfc := client.New(strings.Replace(server.URL, "http://", "", -1), "en")
+	nfc := client.New(strings.Replace(server.URL, "http://", "", -1))
 	rep := New(&nfc)
 
 	getTags := map[string]interface{}{

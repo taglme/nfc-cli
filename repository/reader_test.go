@@ -1,14 +1,15 @@
 package repository
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/taglme/nfc-goclient/pkg/client"
 	"log"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/taglme/nfc-goclient/pkg/client"
 )
 
 func TestRepositoryService_readFromFile(t *testing.T) {
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 
 	data, err := rep.readFromFile("reader_test_file.json")

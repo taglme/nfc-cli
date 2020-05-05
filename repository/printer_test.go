@@ -1,9 +1,10 @@
 package repository
 
 import (
+	"testing"
+
 	"github.com/taglme/nfc-goclient/pkg/client"
 	apiModels "github.com/taglme/nfc-goclient/pkg/models"
-	"testing"
 )
 
 func TestApiService_printAdapters(t *testing.T) {
@@ -18,7 +19,7 @@ func TestApiService_printAdapters(t *testing.T) {
 		},
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 	rep.printAdapters(adapters)
 }
@@ -32,7 +33,7 @@ func TestApiService_printAppInfo(t *testing.T) {
 		BuildTime: "build time",
 	}
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep := New(&nfc)
 	rep.printAppInfo(appInfo)
 }

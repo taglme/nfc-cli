@@ -1,0 +1,19 @@
+language: go
+
+go:
+  - 1.8.x
+  - 1.7.x
+  - 1.6.x
+  - 1.5.x
+  - master
+
+before_script:
+  - go vet ./...
+
+script:
+  - go test -v -cover -race ./...
+
+sudo: false
+
+notifications:
+  email: false

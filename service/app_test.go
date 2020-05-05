@@ -1,11 +1,12 @@
 package service
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/taglme/nfc-cli/opts"
 	"github.com/taglme/nfc-cli/repository"
 	"github.com/taglme/nfc-goclient/pkg/client"
-	"testing"
 )
 
 func TestNew(t *testing.T) {
@@ -38,7 +39,7 @@ func TestAppService_SetRepository(t *testing.T) {
 	app := New(rep, cbCliStarted, config)
 	assert.Nil(t, rep)
 
-	nfc := client.New("url", "en")
+	nfc := client.New("url")
 	rep = repository.New(&nfc)
 	app.SetRepository(rep)
 
