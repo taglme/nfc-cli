@@ -78,12 +78,12 @@ func (t Tag) ToShortResource() TagShortResource {
 func (t TagShortResource) ToTag() (tag Tag, err error) {
 	tType, ok := StringToTagType(t.Type)
 	if !ok {
-		return tag, errors.New("Can't convert type resource category\n")
+		return tag, errors.New("Can't convert type resource category")
 	}
 
 	uuid, err := base64.StdEncoding.DecodeString(t.Uid)
 	if err != nil {
-		return tag, errors.Wrap(err, "Can't decode tag uuid\n")
+		return tag, errors.Wrap(err, "Can't decode tag uuid")
 	}
 
 	return Tag{

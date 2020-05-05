@@ -46,7 +46,7 @@ func newWsService(url string) WsService {
 func (s *wsService) Connect() (err error) {
 	s.conn, _, err = websocket.DefaultDialer.Dial(s.url+s.path, nil)
 	if err != nil {
-		return errors.Wrap(err, "Can't connect to the ws endpoint\n")
+		return errors.Wrap(err, "Can't connect to the ws endpoint")
 	}
 
 	go s.read()
@@ -146,18 +146,18 @@ func (s *wsService) read() {
 		var eventResource models.EventResource
 		_, message, err := s.conn.ReadMessage()
 		if err != nil {
-			s.errListener(errors.Wrap(err, "Can't read WS message\n"))
+			s.errListener(errors.Wrap(err, "Can't read WS message"))
 			return
 		}
 		err = json.Unmarshal(message, &eventResource)
 		if err != nil {
-			s.errListener(errors.Wrap(err, "Can't unmarshall event resource\n"))
+			s.errListener(errors.Wrap(err, "Can't unmarshall event resource"))
 			continue
 		}
 
 		event, err := eventResource.ToEvent()
 		if err != nil {
-			s.errListener(errors.Wrap(err, "Can't convert event resource to the event model\n"))
+			s.errListener(errors.Wrap(err, "Can't convert event resource to the event model"))
 
 			continue
 		}

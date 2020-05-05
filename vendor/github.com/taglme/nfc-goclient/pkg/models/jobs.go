@@ -110,12 +110,12 @@ func (nj NewJob) ToJob(adapterID string, adapterName string) (Job, error) {
 func (j JobResource) ToJob() (job Job, err error) {
 	t, err := time.Parse(time.RFC3339, j.CreatedAt)
 	if err != nil {
-		return job, errors.Wrap(err, "Can't parse job resource created at\n")
+		return job, errors.Wrap(err, "Can't parse job resource created at")
 	}
 
 	s, ok := StringToJobStatus(j.Status)
 	if !ok {
-		return job, errors.Wrap(err, "Can't convert job resource status\n")
+		return job, errors.Wrap(err, "Can't convert job resource status")
 	}
 
 	job = Job{
@@ -136,7 +136,7 @@ func (j JobResource) ToJob() (job Job, err error) {
 		step, err := s.ToJobStep()
 
 		if err != nil {
-			return job, errors.Wrap(err, "Can't convert job step to the step model\n")
+			return job, errors.Wrap(err, "Can't convert job step to the step model")
 		}
 
 		jSteps = append(jSteps, step)

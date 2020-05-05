@@ -57,31 +57,31 @@ func (s *eventService) GetFiltered(adapterID *string, filter EventFilter) (event
 	queryParams := buildEventsQueryParams(adapterID, filter)
 	resp, err := s.client.Get(s.url + s.path + queryParams)
 	if err != nil {
-		return events, pagInfo, errors.Wrap(err, "Can't get events\n")
+		return events, pagInfo, errors.Wrap(err, "Can't get events")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return events, pagInfo, errors.Wrap(err, "Can't convert events to byte slice\n")
+		return events, pagInfo, errors.Wrap(err, "Can't convert events to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return events, pagInfo, errors.Wrap(err, "Error in fetching events\n")
+		return events, pagInfo, errors.Wrap(err, "Error in fetching events")
 	}
 
 	var eListResource models.EventListResource
 	err = json.Unmarshal(body, &eListResource)
 	if err != nil {
-		return events, pagInfo, errors.Wrap(err, "Can't unmarshal events response\n")
+		return events, pagInfo, errors.Wrap(err, "Can't unmarshal events response")
 	}
 
 	events = make([]models.Event, len(eListResource.Items))
 	for i, e := range eListResource.Items {
 		events[i], err = e.ToEvent()
 		if err != nil {
-			return events, pagInfo, errors.Wrap(err, "Can't convert event resource to event model\n")
+			return events, pagInfo, errors.Wrap(err, "Can't convert event resource to event model")
 		}
 	}
 
@@ -97,24 +97,24 @@ func (s *eventService) Add(ne models.NewEvent) (event models.Event, err error) {
 
 	resp, err := s.client.Post(s.url+s.path, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
-		return event, errors.Wrap(err, "Can't post event\n")
+		return event, errors.Wrap(err, "Can't post event")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return event, errors.Wrap(err, "Can't convert resp event to byte slice\n")
+		return event, errors.Wrap(err, "Can't convert resp event to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return event, errors.Wrap(err, "Error in post event\n")
+		return event, errors.Wrap(err, "Error in post event")
 	}
 
 	var eRes models.EventResource
 	err = json.Unmarshal(body, &eRes)
 	if err != nil {
-		return event, errors.Wrap(err, "Can't unmarshal post event response \n")
+		return event, errors.Wrap(err, "Can't unmarshal post event response")
 	}
 
 	return eRes.ToEvent()

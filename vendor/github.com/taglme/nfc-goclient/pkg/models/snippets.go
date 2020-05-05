@@ -32,7 +32,7 @@ const (
 func (s SnippetResource) ToSnippet() (Snippet, error) {
 	c, ok := StringToSnippetCategory(s.Category)
 	if !ok {
-		return Snippet{}, errors.New("Can't convert snippet resource category\n")
+		return Snippet{}, errors.New("Can't convert snippet resource category")
 	}
 
 	return Snippet{

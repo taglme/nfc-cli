@@ -46,17 +46,17 @@ func (j Job) ToJobRun() JobRun {
 func (j JobRunResource) ToJobRun() (job JobRun, err error) {
 	s, ok := StringToJobRunStatus(j.Status)
 	if !ok {
-		return job, errors.New("Can't convert job run resource status\n")
+		return job, errors.New("Can't convert job run resource status")
 	}
 
 	t, err := time.Parse(time.RFC3339, j.CreatedAt)
 	if err != nil {
-		return job, errors.Wrap(err, "Can't parse job run resource created at\n")
+		return job, errors.Wrap(err, "Can't parse job run resource created at")
 	}
 
 	tag, err := j.Tag.ToTag()
 	if err != nil {
-		return job, errors.Wrap(err, "Can't convert job run tag resource\n")
+		return job, errors.Wrap(err, "Can't convert job run tag resource")
 	}
 
 	job = JobRun{
@@ -75,7 +75,7 @@ func (j JobRunResource) ToJobRun() (job JobRun, err error) {
 		stepRes, err := r.ToStepResult()
 
 		if err != nil {
-			return job, errors.Wrap(err, "Can't convert job run result to the step result model\n")
+			return job, errors.Wrap(err, "Can't convert job run result to the step result model")
 		}
 
 		results = append(results, stepRes)

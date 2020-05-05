@@ -2,3 +2,5 @@
 main
 nfc-cli
 /*.json
+/dist
+.env

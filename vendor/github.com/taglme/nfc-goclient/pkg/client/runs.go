@@ -61,31 +61,31 @@ func (s *runService) GetFiltered(adapterID string, filter RunFilter) (runs []mod
 	targetUrl := s.url + s.basePath + "/" + adapterID + s.path + buildRunsQueryParams(filter)
 	resp, err := s.client.Get(targetUrl)
 	if err != nil {
-		return runs, pagInfo, errors.Wrap(err, "Can't get runs\n")
+		return runs, pagInfo, errors.Wrap(err, "Can't get runs")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return runs, pagInfo, errors.Wrap(err, "Can't convert runs to byte slice\n")
+		return runs, pagInfo, errors.Wrap(err, "Can't convert runs to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return runs, pagInfo, errors.Wrap(err, "Error in fetching runs\n")
+		return runs, pagInfo, errors.Wrap(err, "Error in fetching runs")
 	}
 
 	var rListResource models.JobRunListResource
 	err = json.Unmarshal(body, &rListResource)
 	if err != nil {
-		return runs, pagInfo, errors.Wrap(err, "Can't unmarshal runs response\n")
+		return runs, pagInfo, errors.Wrap(err, "Can't unmarshal runs response")
 	}
 
 	runs = make([]models.JobRun, len(rListResource.Items))
 	for i, e := range rListResource.Items {
 		runs[i], err = e.ToJobRun()
 		if err != nil {
-			return runs, pagInfo, errors.Wrap(err, "Can't convert job run resource to job run model\n")
+			return runs, pagInfo, errors.Wrap(err, "Can't convert job run resource to job run model")
 		}
 	}
 
@@ -99,24 +99,24 @@ func (s *runService) Get(adapterID string, runID string) (run models.JobRun, err
 	targetUrl := s.url + s.basePath + "/" + adapterID + s.path + "/" + runID
 	resp, err := s.client.Get(targetUrl)
 	if err != nil {
-		return run, errors.Wrap(err, "Can't get run\n")
+		return run, errors.Wrap(err, "Can't get run")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return run, errors.Wrap(err, "Can't convert run to byte slice\n")
+		return run, errors.Wrap(err, "Can't convert run to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return run, errors.Wrap(err, "Error in fetching run\n")
+		return run, errors.Wrap(err, "Error in fetching run")
 	}
 
 	var rResource models.JobRunResource
 	err = json.Unmarshal(body, &rResource)
 	if err != nil {
-		return run, errors.Wrap(err, "Can't unmarshal run response\n")
+		return run, errors.Wrap(err, "Can't unmarshal run response")
 	}
 
 	return rResource.ToJobRun()

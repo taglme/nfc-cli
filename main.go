@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/taglme/nfc-cli/opts"
@@ -14,6 +15,9 @@ var Commit string
 var SDKInfo string
 var Platform string
 var BuildTime string
+var AppID string
+var AppSecret string
+var AppCert string
 
 func main() {
 	var nfc *client.Client
@@ -21,7 +25,21 @@ func main() {
 	var app service.AppService
 
 	cbCliStarted := func(url string) {
-		nfc = client.New(url)
+		if AppID != "" && AppSecret != "" && AppCert != "" {
+			fmt.Println("Auth enabled")
+			fmt.Printf("AppID: %s\n", AppID)
+			privateRSAKey, err := client.PrivateRSAKeyFromB64String(AppSecret)
+			if err != nil {
+				log.Fatal(err)
+			}
+			auth := client.NewSigner(AppID, privateRSAKey, AppCert)
+			nfc = client.New(url, auth)
+		} else {
+			fmt.Println("Auth disabled")
+			fmt.Printf("AppID: %s\n", AppID)
+			nfc = client.New(url)
+		}
+
 		rep = repository.New(&nfc)
 		app.SetRepository(rep)
 	}

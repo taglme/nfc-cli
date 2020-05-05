@@ -1,7 +1,8 @@
 export GO111MODULE=on
+-include .env
+export
 
-
-VERSION?=1.0.0
+VERSION?=1.1.0
 COMMIT?=$(shell git rev-parse --short HEAD)
 BUILD_TIME?=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
 SDK_INFO := $(shell go version)
@@ -16,7 +17,7 @@ APP_ALIAS?=nfc-cli
 all: deps lint test
 
 build-windows:
-	GOOS=$(WIN_OS) go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${WIN_OS} -X 'main.SDKInfo=$(SDK_INFO)'" -o ${APP_ALIAS}.exe ./main.go
+	GOOS=$(WIN_OS) go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${WIN_OS} -X 'main.SDKInfo=$(SDK_INFO)' -X 'main.AppID=${APP_ID}' -X 'main.AppCert=${CERT}' -X 'main.AppSecret=${SECRET}'" -o ${APP_ALIAS}.exe ./main.go
 
 build-mac:
 	GOOS=$(MAC_OS) go build -mod=vendor -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME} -X main.Platform=${MAC_OS} -X 'main.SDKInfo=$(SDK_INFO)'" -o ${APP_ALIAS} ./main.go

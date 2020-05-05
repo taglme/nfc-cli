@@ -51,7 +51,7 @@ func handleHttpResponseCode(statusCode int, body []byte) (err error) {
 		if err != nil {
 			return
 		}
-		err = fmt.Errorf("server responded with an error. Error message: %s. Error info: %s", errorResponse.Message, errorResponse.Info)
+		err = fmt.Errorf("Server responded with an error: %s (%s)", errorResponse.Message, errorResponse.Info)
 		return err
 	}
 

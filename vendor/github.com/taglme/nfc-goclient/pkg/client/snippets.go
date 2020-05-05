@@ -48,31 +48,31 @@ func (s *snippetService) GetFiltered(filter SnippetFilter) (snippets []models.Sn
 	queryParams := buildSnippetsQueryParams(filter)
 	resp, err := s.client.Get(s.url + s.path + queryParams)
 	if err != nil {
-		return snippets, errors.Wrap(err, "Can't get snippets\n")
+		return snippets, errors.Wrap(err, "Can't get snippets")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return snippets, errors.Wrap(err, "Can't convert snippets to byte slice\n")
+		return snippets, errors.Wrap(err, "Can't convert snippets to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return snippets, errors.Wrap(err, "Error in fetching snippets\n")
+		return snippets, errors.Wrap(err, "Error in fetching snippets")
 	}
 
 	var sListResource models.SnippetListResource
 	err = json.Unmarshal(body, &sListResource)
 	if err != nil {
-		return snippets, errors.Wrap(err, "Can't unmarshal snippets response\n")
+		return snippets, errors.Wrap(err, "Can't unmarshal snippets response")
 	}
 
 	snippets = make([]models.Snippet, len(sListResource))
 	for i, s := range sListResource {
 		snippets[i], err = s.ToSnippet()
 		if err != nil {
-			return snippets, errors.Wrap(err, "Can't convert snippet resource\n")
+			return snippets, errors.Wrap(err, "Can't convert snippet resource")
 		}
 	}
 
