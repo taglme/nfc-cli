@@ -61,11 +61,11 @@ blobs:
   region: eu-west-1
   disableSSL: true
   bucket: static.tagl.me
-  endpoint: https://static.tagl.me/apps/taglme-cli-desktop
+  endpoint: https://static.tagl.me
   ids:
     - default
     - latest
-  folder: ""  
+  folder: "apps/taglme-cli-desktop"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
