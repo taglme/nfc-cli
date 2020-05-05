@@ -64,7 +64,7 @@ blobs:
   ids:
     - default
     - latest
-  folder: "apps/taglme-cli-desktop"  
+  folder: "/apps/taglme-cli-desktop"  
 checksum:
   name_template: 'checksums.txt'
 snapshot:
