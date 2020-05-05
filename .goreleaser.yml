@@ -13,22 +13,47 @@ builds:
   goarch:
     - amd64
 archives:
-- replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
+- id: latest
+  name_template: "{{ .ProjectName }}_{{ .Os }}_latest"
+  replacements:
+    darwin: darwin
+    linux: linux
+    windows: windows
     386: i386
     amd64: x86_64
   format_overrides:
     - goos: windows
       format: zip
   files:
-    #- LICENSE.txt
-    #- README_{{.Os}}.md
-    #- CHANGELOG.md
     - app_icon.png
-    #- design/*.png
-    #- templates/**/*
+- id: default
+  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Version }}"
+  replacements:
+    darwin: darwin
+    linux: linux
+    windows: windows
+    386: i386
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  files:
+    - app_icon.png
+release:
+  github:
+    owner: taglme
+    name: nfc-cli
+  ids:
+    - default
+blobs:
+  provider: s3
+  region: eu-west-1
+  disableSSL: true
+  bucket: static.tagl.me
+  ids:
+    - default
+    - latest
+  folder: "apps/taglme-cli-desktop"  
 checksum:
   name_template: 'checksums.txt'
 snapshot:
