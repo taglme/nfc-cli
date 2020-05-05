@@ -16,6 +16,7 @@ APP_ALIAS?=nfc-cli
 
 export
 
+
 all: deps lint test
 
 build:
