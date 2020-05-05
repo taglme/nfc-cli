@@ -1,8 +1,10 @@
 env:
   - GO111MODULE=on
+dist: dis
 before:
   hooks:
     - go mod download
+    - go mod vendor
 builds:
 - env:
   - CGO_ENABLED=0
@@ -12,6 +14,15 @@ builds:
     - windows
   goarch:
     - amd64
+  ldflags:
+  - -X "main.Version={{.Version}}"
+  - -X "main.Commit={{.ShortCommit}}"
+  - -X "main.BuildTime={{.Date}}"
+  - -X "main.Platform={{.Os}}"
+  - -X "main.SDKInfo={{.Env.SDK_INFO}}"
+  - -X "main.AppID={{.Env.APP_ID}}"
+  - -X "main.AppCert={{.Env.CERT}}"
+  - -X "main.AppSecret={{.Env.SECRET}}"
 archives:
 - id: latest
   name_template: "{{ .ProjectName }}_{{ .Os }}_latest"
