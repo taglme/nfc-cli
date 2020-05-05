@@ -46,7 +46,7 @@ release:
   ids:
     - default
 blobs:
-  provider: s3
+- provider: s3
   region: eu-west-1
   disableSSL: true
   bucket: static.tagl.me
