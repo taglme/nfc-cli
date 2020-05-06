@@ -85,19 +85,19 @@ func (r *AppLicenseResource) ToAppLicense() (appLicense AppLicense, err error) {
 	if r.End != "" {
 		licenseEnd, err = time.Parse("2006-01-02", r.End)
 		if err != nil {
-			return appLicense, errors.Wrap(err, "Can't parse app license end time at\n")
+			return appLicense, errors.Wrap(err, "Can't parse app license end time")
 		}
 	}
 	if r.Start != "" {
 		licenseStart, err = time.Parse("2006-01-02", r.Start)
 		if err != nil {
-			return appLicense, errors.Wrap(err, "Can't parse app license start time at\n")
+			return appLicense, errors.Wrap(err, "Can't parse app license start time")
 		}
 	}
 	if r.Support != "" {
 		licenseSupport, err = time.Parse("2006-01-02", r.Support)
 		if err != nil {
-			return appLicense, errors.Wrap(err, "Can't parse app license support time at\n")
+			return appLicense, errors.Wrap(err, "Can't parse app license support time")
 		}
 	}
 	appLicense = AppLicense{
@@ -116,26 +116,26 @@ func (r *LicenseResource) ToLicense() (license License, err error) {
 	if r.End != "" {
 		licenseEnd, err = time.Parse("2006-01-02", r.End)
 		if err != nil {
-			return license, errors.Wrap(err, "Can't parse license end time at\n")
+			return license, errors.Wrap(err, "Can't parse license end time")
 		}
 	}
 	if r.Start != "" {
 		licenseStart, err = time.Parse("2006-01-02", r.Start)
 		if err != nil {
-			return license, errors.Wrap(err, "Can't parse license start time at\n")
+			return license, errors.Wrap(err, "Can't parse license start time")
 		}
 	}
 	if r.Support != "" {
 		licenseSupport, err = time.Parse("2006-01-02", r.Support)
 		if err != nil {
-			return license, errors.Wrap(err, "Can't parse license support time at\n")
+			return license, errors.Wrap(err, "Can't parse license support time")
 		}
 	}
 	appLicenses := []AppLicense{}
 	for _, appLicenseRes := range r.Applications {
 		appLicense, err := appLicenseRes.ToAppLicense()
 		if err != nil {
-			return license, errors.Wrap(err, "Can't convert app license resource\n")
+			return license, errors.Wrap(err, "Can't convert app license resource")
 		}
 		appLicenses = append(appLicenses, appLicense)
 	}

@@ -20,11 +20,11 @@ github.com/russross/blackfriday/v2
 github.com/shurcooL/sanitized_anchor_name
 # github.com/stretchr/testify v1.5.1
 github.com/stretchr/testify/assert
-# github.com/taglme/nfc-goclient v1.1.4
+# github.com/taglme/nfc-goclient v1.1.6
 github.com/taglme/nfc-goclient/pkg/client
 github.com/taglme/nfc-goclient/pkg/models
 github.com/taglme/nfc-goclient/pkg/ndefconv
 # github.com/urfave/cli/v2 v2.1.1
 github.com/urfave/cli/v2
-# gopkg.in/yaml.v2 v2.2.4
+# gopkg.in/yaml.v2 v2.2.8
 gopkg.in/yaml.v2

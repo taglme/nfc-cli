@@ -14,6 +14,9 @@ var Commit string
 var SDKInfo string
 var Platform string
 var BuildTime string
+var AppID string
+var AppSecret string
+var AppCert string
 
 func main() {
 	var nfc *client.Client
@@ -21,7 +24,17 @@ func main() {
 	var app service.AppService
 
 	cbCliStarted := func(url string) {
-		nfc = client.New(url)
+		if AppID != "" && AppSecret != "" && AppCert != "" {
+			privateRSAKey, err := client.PrivateRSAKeyFromB64String(AppSecret)
+			if err != nil {
+				log.Fatal(err)
+			}
+			auth := client.NewSigner(AppID, privateRSAKey, AppCert)
+			nfc = client.New(url, auth)
+		} else {
+			nfc = client.New(url)
+		}
+
 		rep = repository.New(&nfc)
 		app.SetRepository(rep)
 	}

@@ -42,31 +42,31 @@ func (s *tagService) GetAll(adapterID string, tagType *models.TagType) (tags []m
 
 	resp, err := s.client.Get(targetUrl)
 	if err != nil {
-		return tags, errors.Wrap(err, "Can't get tags\n")
+		return tags, errors.Wrap(err, "Can't get tags")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return tags, errors.Wrap(err, "Can't convert tags to byte slice\n")
+		return tags, errors.Wrap(err, "Can't convert tags to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return tags, errors.Wrap(err, "Error in fetching tags\n")
+		return tags, errors.Wrap(err, "Error in fetching tags")
 	}
 
 	var tListResource models.TagListResource
 	err = json.Unmarshal(body, &tListResource)
 	if err != nil {
-		return tags, errors.Wrap(err, "Can't unmarshal tags response\n")
+		return tags, errors.Wrap(err, "Can't unmarshal tags response")
 	}
 
 	tags = make([]models.Tag, len(tListResource))
 	for i, t := range tListResource {
 		tags[i], err = t.ToTag()
 		if err != nil {
-			return tags, errors.Wrap(err, "Can't convert tag resource to tag model\n")
+			return tags, errors.Wrap(err, "Can't convert tag resource to tag model")
 		}
 	}
 
@@ -81,24 +81,24 @@ func (s *tagService) Get(adapterID string, tagID string) (tag models.Tag, err er
 
 	resp, err := s.client.Get(targetUrl)
 	if err != nil {
-		return tag, errors.Wrap(err, "Can't get tag\n")
+		return tag, errors.Wrap(err, "Can't get tag")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return tag, errors.Wrap(err, "Can't convert tag to byte slice\n")
+		return tag, errors.Wrap(err, "Can't convert tag to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return tag, errors.Wrap(err, "Error in fetching tag\n")
+		return tag, errors.Wrap(err, "Error in fetching tag")
 	}
 
 	var tRes models.TagResource
 	err = json.Unmarshal(body, &tRes)
 	if err != nil {
-		return tag, errors.Wrap(err, "Can't unmarshal tag response\n")
+		return tag, errors.Wrap(err, "Can't unmarshal tag response")
 	}
 
 	return tRes.ToTag()

@@ -1,0 +1,77 @@
+env:
+  - GO111MODULE=on
+dist: dist
+before:
+  hooks:
+    - go mod download
+    - go mod vendor
+builds:
+- env:
+  - CGO_ENABLED=0
+  goos:
+    - linux
+    - darwin
+    - windows
+  goarch:
+    - amd64
+  ldflags:
+  - -X "main.Version={{.Version}}"
+  - -X "main.Commit={{.ShortCommit}}"
+  - -X "main.BuildTime={{.Date}}"
+  - -X "main.Platform={{.Os}}"
+  - -X "main.SDKInfo={{.Env.SDK_INFO}}"
+  - -X "main.AppID={{.Env.APP_ID}}"
+  - -X "main.AppCert={{.Env.CERT}}"
+  - -X "main.AppSecret={{.Env.SECRET}}"
+archives:
+- id: latest
+  name_template: "{{ .ProjectName }}_{{ .Os }}_latest"
+  replacements:
+    darwin: darwin
+    linux: linux
+    windows: windows
+    386: i386
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  files:
+    - app_icon.png
+- id: default
+  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Version }}"
+  replacements:
+    darwin: darwin
+    linux: linux
+    windows: windows
+    386: i386
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  files:
+    - app_icon.png
+release:
+  github:
+    owner: taglme
+    name: nfc-cli
+  ids:
+    - default
+blobs:
+- provider: s3
+  region: eu-west-1
+  disableSSL: true
+  bucket: static.tagl.me
+  ids:
+    - default
+    - latest
+  folder: "apps/taglme-cli-desktop"
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

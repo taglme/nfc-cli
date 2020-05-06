@@ -1,0 +1,70 @@
+{
+    "id":"taglme-cli-desktop",
+    "name": "Taglme CLI",
+    "type": "terminal",
+    "descriptions": [
+        { 
+          "locale":"en",
+          "content": "Terminal application for reading, writing and formatting NFC tags on a PC.\nThe following operations are available:\n  - read information about readers connected to a PC\n  - read information about the NFC tag\n  - read an NDEF message written to an NFC tag\n  - write NDEF messages on an NFC tag\n  - read memory dump NFC tags\n  - NFC tag memory lock\n  - send low-level commands to an NFC tag\nSource code on Github https://github.com/taglme/nfc-cli"
+        },
+        { 
+            "locale":"ru",
+            "content": "Консольное приложение для чтения, записи и форматирования NFC меток на компьютере.\nДоступно выполнение следующих операций:\n  - чтение информации о подключенных к ПК считывателях\n  - чтение информации об NFC метке в поле действия считывателя\n  - чтение NDEF сообщения, записанного на NFC метку\n  - запись NDEF сообщения на NFC метку \n  - чтение дампа памяти NFC метки\n  - блокировка памяти NFC метки\n  - отправка низкоуровневых команд NFC метке\nИсходный код на Github https://github.com/taglme/nfc-cli"
+          }
+      ],
+    "vendor": {
+        "name": "Taglme",
+        "url": "https://tagl.me",
+        "email": "info@tagl.me"
+    },
+    "release" : {
+        "version":"1.1.0",
+        "date":"2020-05-07"
+    },
+    "payment_type" : "free",
+    "icons":[
+        {
+         "src": "app_icon.png",
+         "type": "image/png",
+         "size": "220x220"
+        }
+    ],
+    "require":{
+        "platform":"2.0.0",
+        "plugins": ["Nfcd"]
+    },
+    "descriptor":"https://static.tagl.me/apps/taglme-cli-desktop/descriptor.json",
+    "launch": {
+        "url":"",
+        "command":"nfc-cli",
+        "args": ""
+    },
+    "distributions": [
+        {
+            "platform":"windows",
+            "type":"zip",
+            "url":"static.tagl.me/apps/taglme-cli-desktop/nfc-cli_windows_latest.zip"
+        },
+        {
+            "platform":"linux",
+            "type":"tar.gz",
+            "url":"static.tagl.me/apps/taglme-cli-desktop/nfc-cli_linux_latest.tar.gz"
+        },
+        {
+            "platform":"darwin",
+            "type":"tar.gz",
+            "url":"static.tagl.me/apps/taglme-cli-desktop/nfc-cli_darwin_latest.tar.gz"
+        }
+    ],
+    "authentication":{
+        "type":"none"
+    },
+    "lifecycle":{
+        "installed":"",
+        "uninstalled":"",
+        "enabled":"",
+        "disabled":"",
+        "updated":""
+    },
+    "webhooks": []
+}

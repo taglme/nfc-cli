@@ -45,12 +45,12 @@ type EventListResource struct {
 func (e EventResource) ToEvent() (event Event, err error) {
 	eName, ok := StringToEventName(e.Name)
 	if !ok {
-		return Event{}, errors.New("Can't convert event resource name to event name\n")
+		return Event{}, errors.New("Can't convert event resource name to event name")
 	}
 
 	t, err := time.Parse(time.RFC3339, e.CreatedAt)
 	if err != nil {
-		return Event{}, errors.Wrap(err, "Can't parse event resource created at\n")
+		return Event{}, errors.Wrap(err, "Can't parse event resource created at")
 	}
 
 	return Event{
@@ -217,14 +217,14 @@ func (e Event) GetJob() (job JobResource, ok bool) {
 func (e Event) GetRun() (run JobRunResource, ok bool) {
 	jsonBytes, err := json.Marshal(e.Data)
 	if err != nil {
-		fmt.Printf("Error marshal run resource %s\n", err)
+		fmt.Printf("Error marshal run resource %s", err)
 		return
 	}
 	err = json.Unmarshal(jsonBytes, &run)
 	if err != nil {
 		//Todo fix unmarshal error:
 		//Error unmarshal run resource json: cannot unmarshal object into Go struct field StepResultResource.results.params of type models.CommandParamsResourc
-		fmt.Printf("Error unmarshal run resource %s\n", err)
+		fmt.Printf("Error unmarshal run resource %s", err)
 		return
 	}
 	ok = true

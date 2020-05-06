@@ -1,6 +1,8 @@
 # Taglme CLI Application 
 
 [![release](https://badgen.net/github/tag/taglme/nfc-cli)](https://github.com/taglme/nfc-cli/releases)
+[![codecov](https://codecov.io/gh/taglme/nfc-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/taglme/nfc-cli)
+![build](https://github.com/taglme/nfc-cli/workflows/test%20and%20build/badge.svg)
 
 Cross-platform CLI for reading NFC tags 
 

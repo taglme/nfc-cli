@@ -51,24 +51,24 @@ func (s *adapterService) GetFiltered(adapterType *models.AdapterType) (adapters 
 
 	resp, err := s.client.Get(s.url + s.path + queryParams)
 	if err != nil {
-		return adapters, errors.Wrap(err, "Can't get adapters\n")
+		return adapters, errors.Wrap(err, "Can't get adapters")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return adapters, errors.Wrap(err, "Can't convert adapters to byte slice\n")
+		return adapters, errors.Wrap(err, "Can't convert adapters to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return adapters, errors.Wrap(err, "Error in fetching adapters\n")
+		return adapters, errors.Wrap(err, "Error in fetching adapters")
 	}
 
 	var aListResource models.AdapterListResource
 	err = json.Unmarshal(body, &aListResource)
 	if err != nil {
-		return adapters, errors.Wrap(err, "Can't unmarshal events response\n")
+		return adapters, errors.Wrap(err, "Can't unmarshal events response")
 	}
 
 	adapters = make([]models.Adapter, len(aListResource))
@@ -84,24 +84,24 @@ func (s *adapterService) GetFiltered(adapterType *models.AdapterType) (adapters 
 func (s *adapterService) Get(adapterID string) (adapter models.Adapter, err error) {
 	resp, err := s.client.Get(s.url + s.path + "/" + adapterID)
 	if err != nil {
-		return adapter, errors.Wrap(err, "Can't get adapter\n")
+		return adapter, errors.Wrap(err, "Can't get adapter")
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return adapter, errors.Wrap(err, "Can't convert adapter to byte slice\n")
+		return adapter, errors.Wrap(err, "Can't convert adapter to byte slice")
 	}
 
 	err = handleHttpResponseCode(resp.StatusCode, body)
 	if err != nil {
-		return adapter, errors.Wrap(err, "Error in fetching adapters\n")
+		return adapter, errors.Wrap(err, "Error in fetching adapters")
 	}
 
 	var aResource models.AdapterResource
 	err = json.Unmarshal(body, &aResource)
 	if err != nil {
-		return adapter, errors.Wrap(err, "Can't unmarshal adapter response\n")
+		return adapter, errors.Wrap(err, "Can't unmarshal adapter response")
 	}
 
 	return aResource.ToAdapter(), nil

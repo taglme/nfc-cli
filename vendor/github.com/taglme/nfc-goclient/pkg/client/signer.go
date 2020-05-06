@@ -42,23 +42,23 @@ func (s *Signer) Intercept(chain train.Chain) (*http.Response, error) {
 		midReqPath := "http://" + req.URL.Host + midPath
 		resp, err := http.Get(midReqPath)
 		if err != nil {
-			return nil, errors.Wrap(err, "Could not make request to get MID\n")
+			return nil, errors.Wrap(err, "Could not make request to get MID")
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return nil, errors.Wrap(err, "Could not read MID request body\n")
+			return nil, errors.Wrap(err, "Could not read MID request body")
 		}
 		var midRes models.LicenseMID
 		err = json.Unmarshal(body, &midRes)
 		if err != nil {
-			return nil, errors.Wrap(err, "Could not marshal MID request body\n")
+			return nil, errors.Wrap(err, "Could not marshal MID request body")
 		}
 		s.mid = midRes.MID
 	}
 	err := s.Sign(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "Could not sign request\n")
+		return nil, errors.Wrap(err, "Could not sign request")
 	}
 	return chain.Proceed(req)
 }
