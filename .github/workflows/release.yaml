@@ -2,9 +2,10 @@ name: goreleaser
 
 on:
   push:
+    branches:
+      - "!*"
     tags:
-      - '*'
-  
+      - "v*.*.*"
 
 jobs:
   goreleaser:
@@ -27,6 +28,9 @@ jobs:
         with:
           version: latest
           args: release --rm-dist
-          key: ${{ secrets.YOUR_PRIVATE_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SDK_INFO: ${{ secrets.GITHUB_TOKEN }}
+          APP_ID: ${{ secrets.APP_ID }}
+          CERT: ${{ secrets.CERT }}
+          SECRET: ${{ secrets.SECRET }}
