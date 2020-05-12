@@ -48,7 +48,6 @@ func main() {
 	}
 
 	app = service.New(rep, cbCliStarted, config)
-
 	err := app.Start()
 
 	if err != nil {
