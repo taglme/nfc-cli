@@ -2,9 +2,13 @@ package repository
 
 import (
 	"fmt"
+	"log"
+	"strings"
+
+	"github.com/fatih/color"
+
 	"github.com/taglme/nfc-cli/models"
 	apiModels "github.com/taglme/nfc-goclient/pkg/models"
-	"log"
 )
 
 func (s *RepositoryService) RunWsConnection(eHandler func(models.Event, interface{}), errHandler func(error)) error {
@@ -64,21 +68,24 @@ func (s *RepositoryService) eventHandler(e apiModels.Event) {
 		}
 
 		if e.Name.String() == "run_success" {
-			fmt.Printf("Job %s: run finished successfully.\n", j.JobName)
+			color.Green("Job %s: run finished successfully.\n", j.JobName)
 		} else {
-			fmt.Printf("Job %s: run finished unsuccessfully.\n", j.JobName)
+			color.Red("Job %s: run finished unsuccessfully.\n", j.JobName)
 		}
 
 		jobRun := parseJobRunStruct(e.Data)
 		fmt.Printf("Job %s: -----run results start-----\n", j.JobName)
 
 		for i, s := range jobRun.Results {
-			fmt.Printf("[Step %d] %s – %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String())
-
+			endStr := ""
 			if len(s.Message) > 0 {
-				fmt.Printf(" (%s)\n", s.Message)
+				endStr = "(" + s.Message + ")"
+			}
+
+			if s.Status == apiModels.CommandStatusSuccess {
+				color.Green("[Step %d] %s – %s %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String(), endStr)
 			} else {
-				fmt.Println()
+				color.Red("[Step %d] %s – %s %s", i+1, MapRunStepCmdToString[s.Command], s.Status.String(), endStr)
 			}
 
 			if s.Params != nil {
@@ -91,7 +98,15 @@ func (s *RepositoryService) eventHandler(e apiModels.Event) {
 			if s.Output != nil {
 				oStr := s.Output.String()
 				if len(oStr) > 0 {
+					if strings.Contains(oStr, "Record") {
+						if strings.Contains(oStr, "Empty") {
+							oStr = color.CyanString(oStr)
+						} else {
+							oStr = color.MagentaString(oStr)
+						}
+					}
 					fmt.Printf("Output:\n%s\n", oStr)
+
 				}
 			}
 		}

@@ -6,8 +6,14 @@ github.com/davecgh/go-spew/spew
 github.com/dgrijalva/jwt-go
 # github.com/f2prateek/train v0.0.0-20170409194429-523ebcaf2f00
 github.com/f2prateek/train
+# github.com/fatih/color v1.10.0
+github.com/fatih/color
 # github.com/gorilla/websocket v1.4.1
 github.com/gorilla/websocket
+# github.com/mattn/go-colorable v0.1.8
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.12
+github.com/mattn/go-isatty
 # github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 github.com/nu7hatch/gouuid
 # github.com/pkg/errors v0.9.1
@@ -26,5 +32,7 @@ github.com/taglme/nfc-goclient/pkg/models
 github.com/taglme/nfc-goclient/pkg/ndefconv
 # github.com/urfave/cli/v2 v2.1.1
 github.com/urfave/cli/v2
+# golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
+golang.org/x/sys/unix
 # gopkg.in/yaml.v2 v2.2.8
 gopkg.in/yaml.v2
